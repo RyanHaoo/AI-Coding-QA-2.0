@@ -68,6 +68,14 @@ function MessagePart({
   part: UIMessage["parts"][number];
 }) {
   if (part.type === "text") {
+    const createdTicket = parseCreatedTicketFromText(part.text);
+
+    if (createdTicket) {
+      return (
+        <TicketResultList message="工单已创建成功" tickets={[createdTicket]} />
+      );
+    }
+
     const parsedTickets = parseTicketResultsFromText(part.text);
 
     if (parsedTickets.length > 0) {
@@ -205,4 +213,41 @@ function parseTicketResultsFromText(text: string): AssistantTicketResult[] {
       } satisfies AssistantTicketResult,
     ];
   });
+}
+
+function parseCreatedTicketFromText(
+  text: string,
+): AssistantTicketResult | null {
+  if (!text.includes("工单已创建") || !text.includes("工单编号")) {
+    return null;
+  }
+
+  const normalized = text.replace(/\*\*/g, "");
+  const compact = normalized.replace(/\n(?=[^-\n]*[&?=])/g, "");
+  const ticketNumber = compact.match(/工单编号[:：]\s*([A-Z0-9-]+)/i)?.[1];
+  const detailHref =
+    compact.match(/\[查看工单\]\(([\s\S]*?)\)/)?.[1]?.replace(/\s/g, "") ??
+    compact.match(/\[查看详情\]\(([\s\S]*?)\)/)?.[1]?.replace(/\s/g, "") ??
+    "";
+  const assigneeName =
+    compact.match(/责任人[:：]\s*([^\n]+)/)?.[1]?.trim() ?? "待分配";
+  const summary =
+    compact.match(/问题[:：]\s*([^\n]+)/)?.[1]?.trim() ??
+    compact.match(/摘要[:：]\s*([^\n]+)/)?.[1]?.trim() ??
+    "已创建的质检工单";
+
+  if (!ticketNumber) {
+    return null;
+  }
+
+  return {
+    assigneeName,
+    detailHref: detailHref || "/?view=tickets",
+    locationDetail: "查看工单详情",
+    severity: "normal",
+    status: "pending",
+    summary,
+    ticketId: ticketNumber,
+    ticketNumber,
+  };
 }
