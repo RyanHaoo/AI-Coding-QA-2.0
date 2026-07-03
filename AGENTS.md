@@ -19,6 +19,7 @@
 - `lib/utils.ts`：通用工具函数，含 shadcn 常用 `cn`。
 - `lib/supabase/`：Supabase 环境读取、浏览器 client、服务端 client、会话刷新逻辑。
 - `proxy.ts`：根级 Next.js proxy，接入 Supabase 会话刷新。
+- `scripts/prepare.mjs`：`npm prepare` 钩子脚本；本地 Git 仓库中配置 `.githooks`，Vercel 等无 `.git` 构建环境中自动跳过。
 - `stitch/16591807519307787618/`：Stitch 项目 `智能质检工单` 的截图、HTML 与 `manifest.json`。
 - `.specify/`：spec-kit 脚本、模板和项目宪章。
 - `.agents/skills/`：spec-kit 初始化生成的本地技能。
@@ -62,6 +63,18 @@
 - 服务端 client：`lib/supabase/server.ts`。
 - 会话刷新：`lib/supabase/proxy.ts` 与根 `proxy.ts`。
 - 当前环境没有 supabase CLI，请使用 supabase MCP 内的等效工具
+
+## Vercel
+
+- Vercel 项目：`qa-new`。
+- Team：`Ryan Hao's projects`（slug：`ryan-haos-projects`，ID：`team_wAxFdMSYyiA8yM7g5LUofKQl`）。
+- Project ID：`prj_Y5OpZGDscyRdyYG14NtZ0zNJhz8m`。
+- Production URL：`https://qa-new-olive.vercel.app`。
+- 当前生产部署：`dpl_5gWHHdbzHg3VbnfJ4fcrUzvUqW7y`，部署 URL：`https://qa-izchq71q8-ryan-haos-projects.vercel.app`。
+- 首次本地关联命令：`npx vercel@latest link --yes --project qa-new --scope ryan-haos-projects`。
+- Production 部署命令：`npx vercel@latest deploy --prod --yes --scope ryan-haos-projects`。
+- Production 环境变量需在 Vercel 项目中配置：`NEXT_PUBLIC_SUPABASE_URL`、`NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`、`SECRET_KEY`。不要把真实 `SECRET_KEY` 写入仓库、日志或文档。
+- 部署后校验命令：`npx vercel@latest inspect <deployment-url> --scope ryan-haos-projects`，并用浏览器或 HTTP 请求检查 `https://qa-new-olive.vercel.app` 返回 200 且首屏可渲染。
 
 ## spec-kit
 
