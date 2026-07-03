@@ -103,19 +103,21 @@ export function PageContent({
         view === "assistant" ? "min-h-0 flex-1" : "",
       )}
     >
-      <header className="flex shrink-0 flex-col gap-3 border-slate-200 border-b pb-6">
-        <div className="flex items-center gap-2">
-          <Badge variant="secondary" className="rounded-md">
-            {content.label}
-          </Badge>
-          <span className="text-slate-400 text-xs">
-            {currentIdentity.project.name}
-          </span>
-        </div>
-        <h1 className="font-semibold text-2xl text-slate-950">
-          {content.title}
-        </h1>
-      </header>
+      {view === "assistant" ? null : (
+        <header className="flex shrink-0 flex-col gap-3 border-slate-200 border-b pb-6">
+          <div className="flex items-center gap-2">
+            <Badge variant="secondary" className="rounded-md">
+              {content.label}
+            </Badge>
+            <span className="text-slate-400 text-xs">
+              {currentIdentity.project.name}
+            </span>
+          </div>
+          <h1 className="font-semibold text-2xl text-slate-950">
+            {content.title}
+          </h1>
+        </header>
+      )}
 
       {view === "assistant" && assistantSessionId ? (
         <AssistantPage

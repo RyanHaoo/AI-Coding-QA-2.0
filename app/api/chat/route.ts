@@ -12,7 +12,9 @@ import { createAssistantAgent } from "@/lib/assistant/agent";
 import { resolveAssistantIdentity } from "@/lib/assistant/runtime";
 import {
   ensureOwnedAssistantSession,
+  mergeAssistantMessages,
   saveAssistantSessionMessages,
+  trimAssistantMessages,
 } from "@/lib/assistant/session";
 import { collectUploadedImageUrls } from "@/lib/assistant/uploads";
 
@@ -25,7 +27,9 @@ type ChatRequestBody = {
 
 export async function POST(request: Request) {
   const body = (await request.json()) as ChatRequestBody;
-  const messages = Array.isArray(body.messages) ? body.messages : [];
+  const messages = trimAssistantMessages(
+    Array.isArray(body.messages) ? body.messages : [],
+  );
 
   const identity = await resolveAssistantIdentity();
   if (!identity.currentIdentity || !identity.userId) {
@@ -67,7 +71,7 @@ export async function POST(request: Request) {
     },
     onEnd: async ({ messages: finalMessages }) => {
       await saveAssistantSessionMessages({
-        messages: finalMessages,
+        messages: mergeAssistantMessages(session.fullMessages, finalMessages),
         sessionId: session.id,
         userId: identity.userId,
       });

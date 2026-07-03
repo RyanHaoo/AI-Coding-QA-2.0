@@ -10,6 +10,44 @@ type AssistantSessionRow = {
   messages: UIMessage[] | null;
 };
 
+export const MAX_ASSISTANT_READ_MESSAGES = 20;
+
+export function trimAssistantMessages(messages: UIMessage[]) {
+  return messages.slice(-MAX_ASSISTANT_READ_MESSAGES);
+}
+
+export function mergeAssistantMessages(
+  existingMessages: UIMessage[],
+  finalMessages: UIMessage[],
+) {
+  const finalById = new Map(
+    finalMessages.map((message) => [message.id, message]),
+  );
+  const existingIds = new Set(existingMessages.map((message) => message.id));
+  const mergedMessages = existingMessages.map(
+    (message) => finalById.get(message.id) ?? message,
+  );
+
+  for (const message of finalMessages) {
+    if (!existingIds.has(message.id)) {
+      mergedMessages.push(message);
+    }
+  }
+
+  return mergedMessages;
+}
+
+function toAssistantSession(row: AssistantSessionRow) {
+  const fullMessages = row.messages ?? [];
+
+  return {
+    draftState: row.draft_state ?? null,
+    fullMessages,
+    id: row.id,
+    messages: trimAssistantMessages(fullMessages),
+  };
+}
+
 type AssistantSessionWriteClient = {
   from(table: "assistant_sessions"): {
     select(columns: string): {
@@ -63,12 +101,7 @@ export async function getOrCreateAssistantSession(input: {
   }
 
   if (data) {
-    const row = data as unknown as AssistantSessionRow;
-    return {
-      draftState: row.draft_state ?? null,
-      id: row.id,
-      messages: row.messages ?? [],
-    };
+    return toAssistantSession(data as unknown as AssistantSessionRow);
   }
 
   const writeSupabase = supabase as unknown as AssistantSessionWriteClient;
@@ -89,12 +122,7 @@ export async function getOrCreateAssistantSession(input: {
     );
   }
 
-  const row = inserted as unknown as AssistantSessionRow;
-  return {
-    draftState: row.draft_state ?? null,
-    id: row.id,
-    messages: row.messages ?? [],
-  };
+  return toAssistantSession(inserted as unknown as AssistantSessionRow);
 }
 
 export async function ensureOwnedAssistantSession(input: {
@@ -126,12 +154,7 @@ export async function ensureOwnedAssistantSession(input: {
     throw new Error("助手会话不存在或无权访问。");
   }
 
-  const row = data as unknown as AssistantSessionRow;
-  return {
-    draftState: row.draft_state ?? null,
-    id: row.id,
-    messages: row.messages ?? [],
-  };
+  return toAssistantSession(data as unknown as AssistantSessionRow);
 }
 
 export async function saveAssistantSessionMessages(input: {
