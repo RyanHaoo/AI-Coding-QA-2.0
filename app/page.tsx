@@ -1,39 +1,71 @@
-import { ArrowUpRight, Blocks, CheckCircle2 } from "lucide-react";
-
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { AppShell } from "@/components/app-shell/app-shell";
+import { NoPermission } from "@/components/app-shell/no-permission";
+import { PageContent } from "@/components/app-shell/page-content";
 import {
-  Card,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+  EmptyIdentityState,
+  IdentitySelection,
+} from "@/components/auth/identity-selection";
+import { LoginForm } from "@/components/auth/login-form";
+import {
+  getCurrentIdentityCookie,
+  getCurrentUserMemberships,
+  getSignedInUser,
+  resolveCurrentMembership,
+} from "@/lib/identity/queries";
+import {
+  getNavigationForRole,
+  isViewAllowed,
+  normalizeView,
+} from "@/lib/identity/navigation";
 
-export default function Home() {
+type HomeProps = {
+  searchParams?: Promise<{
+    view?: string | string[];
+  }>;
+};
+
+export default async function Home({ searchParams }: HomeProps) {
+  const user = await getSignedInUser();
+
+  if (!user) {
+    return <LoginForm />;
+  }
+
+  const [{ error, memberships }, selectedMembershipId, params] =
+    await Promise.all([
+      getCurrentUserMemberships(),
+      getCurrentIdentityCookie(),
+      searchParams,
+    ]);
+
+  if (memberships.length === 0) {
+    return <EmptyIdentityState error={error} />;
+  }
+
+  const currentIdentity = resolveCurrentMembership(
+    memberships,
+    selectedMembershipId,
+  );
+
+  if (!currentIdentity) {
+    return <IdentitySelection memberships={memberships} />;
+  }
+
+  const activeView = normalizeView(params?.view);
+  const navigation = getNavigationForRole(currentIdentity.role);
+  const allowed = isViewAllowed(currentIdentity.role, activeView);
+
   return (
-    <main className="flex min-h-svh items-center justify-center bg-background px-6 py-10 text-foreground">
-      <Card className="w-full max-w-xl">
-        <CardHeader className="gap-5">
-          <div className="flex items-center justify-between gap-4">
-            <Badge variant="secondary" className="w-fit gap-1.5">
-              <CheckCircle2 className="size-3.5" />
-              Ready
-            </Badge>
-            <Blocks className="size-5 text-muted-foreground" />
-          </div>
-          <div className="space-y-3">
-            <CardTitle className="text-2xl">QA New Starter</CardTitle>
-            <CardDescription>
-              Next.js App Router, TypeScript, Biome, shadcn/ui, and lucide-react
-              are wired for a clean starting point.
-            </CardDescription>
-          </div>
-          <Button className="w-fit">
-            Dummy action
-            <ArrowUpRight data-icon="inline-end" />
-          </Button>
-        </CardHeader>
-      </Card>
-    </main>
+    <AppShell
+      activeView={activeView}
+      currentIdentity={currentIdentity}
+      navigation={navigation}
+    >
+      {allowed ? (
+        <PageContent currentIdentity={currentIdentity} view={activeView} />
+      ) : (
+        <NoPermission currentIdentity={currentIdentity} />
+      )}
+    </AppShell>
   );
 }
