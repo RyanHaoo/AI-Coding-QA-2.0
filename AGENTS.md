@@ -48,6 +48,7 @@
 - 优先复用现有目录和 shadcn/ui 模式；新增 UI 组件默认放在 `components/ui/`，业务组件再按功能另建目录。
 - 无需处理 `npm audit` 输出，除非用户明确要求。
 - Windows 环境下按 UTF-8 处理源码、Markdown、JSON、YAML、TOML、CSV 和配置文件；编辑优先使用 `apply_patch`。
+- 需要使用真实浏览器测试时调用codex内置的浏览器，不要连接或启动外部浏览器
 
 ## Supabase
 
