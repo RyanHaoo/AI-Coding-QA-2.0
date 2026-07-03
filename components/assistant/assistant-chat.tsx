@@ -46,8 +46,8 @@ export function AssistantChat({
   }
 
   return (
-    <div className="relative mx-auto flex min-h-[calc(100vh-9rem)] w-full min-w-0 max-w-4xl flex-col overflow-x-hidden">
-      <div className="min-w-0 flex-1 pb-40">
+    <div className="mx-auto flex h-full min-h-0 w-full min-w-0 max-w-4xl flex-col overflow-hidden">
+      <div className="min-w-0 flex-1 overflow-y-auto overscroll-contain pb-6">
         {messages.length === 0 ? (
           <AssistantEmptyState />
         ) : (
@@ -64,7 +64,7 @@ export function AssistantChat({
         ) : null}
       </div>
 
-      <div className="sticky bottom-0 min-w-0 border-slate-200 border-t bg-[#f7f9fb]/90 py-4 backdrop-blur">
+      <div className="min-w-0 shrink-0 border-slate-200 border-t bg-[#f7f9fb]/90 py-4 backdrop-blur">
         <AssistantInput disabled={busy} onSend={send} />
       </div>
     </div>

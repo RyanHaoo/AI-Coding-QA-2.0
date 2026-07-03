@@ -22,6 +22,7 @@ import type {
   TicketDetailResult,
   TicketSummary,
 } from "@/lib/tickets/types";
+import { cn } from "@/lib/utils";
 
 type PageContentProps = {
   adminDashboard?: {
@@ -96,8 +97,13 @@ export function PageContent({
   const ticketBaseView = view === "admin-tickets" ? "admin-tickets" : "tickets";
 
   return (
-    <div className="mx-auto flex w-full min-w-0 max-w-5xl flex-col gap-6 overflow-x-hidden">
-      <header className="flex flex-col gap-3 border-slate-200 border-b pb-6">
+    <div
+      className={cn(
+        "mx-auto flex w-full min-w-0 max-w-5xl flex-col gap-6 overflow-x-hidden",
+        view === "assistant" ? "min-h-0 flex-1" : "",
+      )}
+    >
+      <header className="flex shrink-0 flex-col gap-3 border-slate-200 border-b pb-6">
         <div className="flex items-center gap-2">
           <Badge variant="secondary" className="rounded-md">
             {content.label}

@@ -18,7 +18,7 @@ export function AssistantPage({
   sessionId: string;
 }) {
   return (
-    <section>
+    <section className="min-h-0 flex-1">
       <AssistantChat
         builders={builders}
         initialMessages={initialMessages}

@@ -104,7 +104,16 @@ export function AppShell({
           </div>
         </header>
 
-        <main className="px-4 py-8 md:px-10 md:py-10">{children}</main>
+        <main
+          className={cn(
+            "px-4 md:px-10",
+            activeView === "assistant"
+              ? "flex h-[calc(100svh-3.5rem)] min-h-0 flex-col overflow-hidden py-6 md:py-8"
+              : "py-8 md:py-10",
+          )}
+        >
+          {children}
+        </main>
       </div>
     </div>
   );
