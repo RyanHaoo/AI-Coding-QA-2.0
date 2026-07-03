@@ -29,6 +29,10 @@
 - 如果常用库通过 context7 检索，必须把使用过的 library id 记录到本文档。
 - 若本地 skill 和 context7 都没有结果，再使用网络搜索。
 - 本次初始化使用了本地 Next.js、shadcn/ui 与内置浏览器 skill，未使用 context7 library id。
+- Supabase 项目：`qa-new`，ref `alfsrxwabllyldcbofok`，region `ap-southeast-1`，org `RyanHaoo's Org` (`dxpxhdtdmouyctgepjcq`)。
+- Supabase env：实际本地值放在 `.env.local`；可提交模板放在 `.env.example`。`NEXT_PUBLIC_SUPABASE_URL` 和 `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` 可用于浏览器，`SECRET_KEY` 只能手动填入并仅在服务端使用。
+- Supabase client：环境读取位于 `lib/supabase/env.ts`，浏览器 client 位于 `lib/supabase/client.ts`，服务端 client 位于 `lib/supabase/server.ts`，会话刷新 proxy 位于 `lib/supabase/proxy.ts` 和根 `proxy.ts`。
+- 本次 Supabase 初始化查询了 Supabase changelog、Supabase MCP `searchDocs` 的 Next.js SSR client 文档，以及本地 Next.js 16 `proxy` 文档；未使用 context7 library id。
 
 <!-- BEGIN:nextjs-agent-rules -->
 # 注意当前 Next.js 版本
