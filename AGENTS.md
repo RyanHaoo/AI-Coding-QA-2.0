@@ -37,6 +37,10 @@
 
 ## 开发注意事项
 
+- 阶段开发进度统一维护在 `progress.md`。
+- 每个功能阶段必须作为独立 speckit SDD 单元推进，阶段开始前生成或更新对应 spec、plan、tasks。
+- 每个阶段开发完成后，必须更新 `progress.md` 中的阶段状态、完成日期、主要交付、验证结果、遗留问题和下一阶段入口条件，再进行提交或交付汇报。
+- `progress.md` 中的估算使用 AI Agent Coding 对话节奏，不代表真实生产排期。
 - 当前 Next.js 版本包含破坏性变化。写 Next.js 相关代码前，先阅读 `node_modules/next/dist/docs/` 中对应主题的本地文档，并留意弃用提示。
 - TypeScript 使用 strict mode；路径别名 `@/*` 指向仓库根目录。
 - Biome 使用 2 空格缩进，开启推荐规则、Next/React domain 规则和自动整理 import。
