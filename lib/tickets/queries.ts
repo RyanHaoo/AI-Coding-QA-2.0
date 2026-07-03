@@ -8,6 +8,7 @@ import { createClient } from "@/lib/supabase/server";
 import type {
   TicketActivity,
   TicketActivityType,
+  TicketAssigneeCandidate,
   TicketDetailData,
   TicketDetailResult,
   TicketPerson,
@@ -430,4 +431,59 @@ export async function getTicketDetail(
       rootCause: (data as TicketRow).root_cause ?? null,
     } satisfies TicketDetailData,
   };
+}
+
+export async function getReassignCandidates(
+  currentIdentity: ProjectMembership,
+  currentAssigneeMembershipId: string,
+): Promise<TicketAssigneeCandidate[]> {
+  const supabase = createAdminClient();
+  const { data, error } = await supabase
+    .from("project_memberships")
+    .select(`
+      id,
+      profile:app_users(
+        id,
+        email,
+        employee_number,
+        full_name,
+        department,
+        avatar_url
+      )
+    `)
+    .eq("project_id", currentIdentity.project.id)
+    .eq("role", "builder")
+    .neq("id", currentAssigneeMembershipId)
+    .order("created_at", { ascending: true });
+
+  if (error) {
+    return [];
+  }
+
+  return (
+    (data ?? []) as unknown as Array<{
+      id: string;
+      profile: RelatedValue<ProfileRow>;
+    }>
+  ).flatMap((row) => {
+    const profile = firstRelated(row.profile);
+
+    if (!profile) {
+      return [];
+    }
+
+    return [
+      {
+        membershipId: row.id,
+        profile: {
+          avatarUrl: profile.avatar_url,
+          department: profile.department,
+          email: profile.email,
+          employeeNumber: profile.employee_number,
+          fullName: profile.full_name,
+          id: profile.id,
+        },
+      },
+    ];
+  });
 }

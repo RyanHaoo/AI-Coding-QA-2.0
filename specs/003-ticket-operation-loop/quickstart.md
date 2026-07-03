@@ -14,7 +14,7 @@
 npm run dev
 ```
 
-打开本地开发地址后，使用 `progress.md` 中的测试账号登录。建议优先使用：
+本次实现验收使用的本地开发地址为 `http://localhost:3000`。打开本地开发地址后，使用 `progress.md` 中的测试账号登录。建议优先使用：
 
 - `wang.builder@example.com`: 施工方路径，验证解决、拒绝和指派。
 - `li.qc@example.com`: 质检员路径，验证编辑和重新打开。
@@ -99,3 +99,28 @@ npm run check
 ```
 
 预期命令通过。若失败，必须先修复 TypeScript、Biome format 或 lint 问题；若环境原因无法运行，交付说明必须记录原因和风险。
+
+## 本次实现验收记录
+
+**日期**：2026-07-03
+
+**迁移与 Storage**：
+
+- 已通过 Supabase MCP 将 `stage3_ticket_operations` migration 应用到项目 `alfsrxwabllyldcbofok`。
+- 已验证 `ticket-images` Storage bucket 存在，`public=true`，单文件限制为 5MB，允许 `image/jpeg`、`image/png`、`image/webp`、`image/gif`。
+- 已验证 `project_memberships_project_role_idx` 与 `tickets_project_status_idx` 存在。
+
+**浏览器验收**：
+
+- 管理员 `chen.admin@example.com`：打开上海项目待处理工单，解决 `WO-2026-0004` 成功，状态变为已完成，问题归因、预防建议和“解决”处理记录同步刷新。
+- 管理员 `chen.admin@example.com`：重新打开 `WO-2026-0004` 成功，状态恢复待处理，责任人保持王强，处理记录新增“重新打开”。
+- 管理员 `chen.admin@example.com`：编辑 `WO-2026-0004` 问题描述成功，详情字段刷新，处理记录新增“编辑”；取消编辑不会提交变更。
+- 管理员 `chen.admin@example.com`：拒绝 `WO-2026-0001` 成功，状态变为已拒绝，处理记录新增“拒绝”，已结束状态只展示“重新打开”入口。
+- 施工方 `ryan.multi@example.com` / 杭州云栖住宅北区：将 `WO-2026-0009` 指派给赵磊后，Ryan 当前身份无法继续查看该工单。
+- 施工方 `zhao.builder@example.com` / 杭州云栖住宅北区：打开 `WO-2026-0009` 成功，当前责任人变为赵磊，处理记录展示“当前责任人由 Ryan Hao 变为赵磊”。
+- 质检员 `sun.qc@example.com` / 杭州云栖住宅北区：打开自建待处理工单 `WO-2026-0009` 时只展示“编辑”，不展示解决、拒绝或指派入口。
+- 浏览器控制台错误：无。
+
+**未完全自动化验证项**：
+
+- 浏览器自动化未执行本地文件选择，因此未通过 UI 实际上传新增图片；Storage bucket、服务端上传代码、保留/删除图片表单字段和构建检查已完成。

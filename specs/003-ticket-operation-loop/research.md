@@ -76,3 +76,12 @@
 
 - 让用户完整填写处理记录内容: 输入负担重，记录格式不稳定。
 - 只记录操作类型不记录内容: 无法解释责任人、状态或字段变化。
+
+## 实施确认: Next.js 16 本地文档注意事项
+
+已查阅 `node_modules/next/dist/docs/01-app/02-guides/server-actions.md`、`forms.md`、`redirecting.md`，以及 `01-app/03-api-reference/04-functions/revalidatePath.md`、`redirect.md` 和 `01-directives/use-server.md`。阶段 3 实现遵循以下约束：
+
+- Server Actions 继续集中在 `app/actions.ts`，所有 `FormData` 输入按不可信输入处理，服务端重新校验当前身份、项目、角色、状态和字段。
+- 成功 mutation 后调用 `revalidatePath("/")` 刷新首页壳层下的列表与详情数据；不在 action 成功路径中新增独立 route 或客户端缓存。
+- `"use server"` 文件只导出 server action 函数和类型，表单初始状态放在 client 组件辅助文件中，避免 Next.js 构建约束冲突。
+- `redirect` 继续只用于登录、身份选择和退出等既有流程；工单操作 action 通过返回状态展示成功或失败，不在 `try/catch` 内调用 redirect。

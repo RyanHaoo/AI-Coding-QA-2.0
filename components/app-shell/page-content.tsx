@@ -12,12 +12,17 @@ import { TicketDetailState } from "@/components/tickets/ticket-detail-state";
 import { TicketList } from "@/components/tickets/ticket-list";
 import type { AppView, ProjectMembership } from "@/lib/identity/types";
 import type { TicketQueryParams } from "@/lib/tickets/query-params";
-import type { TicketDetailResult, TicketSummary } from "@/lib/tickets/types";
+import type {
+  TicketAssigneeCandidate,
+  TicketDetailResult,
+  TicketSummary,
+} from "@/lib/tickets/types";
 
 type PageContentProps = {
   adminTickets?: TicketCollection;
   currentIdentity: ProjectMembership;
   memberTickets?: TicketCollection;
+  reassignCandidates: TicketAssigneeCandidate[];
   ticketDetail?: TicketDetailResult | null;
   ticketQuery: TicketQueryParams;
   view: AppView;
@@ -59,6 +64,7 @@ export function PageContent({
   adminTickets,
   currentIdentity,
   memberTickets,
+  reassignCandidates,
   ticketDetail,
   ticketQuery,
   view,
@@ -86,6 +92,8 @@ export function PageContent({
       {ticketDetail?.kind === "found" ? (
         <TicketDetail
           baseView={ticketBaseView}
+          currentIdentity={currentIdentity}
+          reassignCandidates={reassignCandidates}
           sort={ticketQuery.ticketSort}
           status={ticketQuery.ticketStatus}
           ticket={ticketDetail.ticket}

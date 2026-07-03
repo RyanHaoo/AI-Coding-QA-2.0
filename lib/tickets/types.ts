@@ -22,6 +22,19 @@ export type TicketStatusFilter = "pending" | "closed" | "all";
 
 export type TicketSort = "newest" | "oldest";
 
+export type TicketOperationState = {
+  message: string;
+  ok: boolean;
+};
+
+export type TicketOperationPermission = {
+  canEdit: boolean;
+  canReassign: boolean;
+  canReject: boolean;
+  canReopen: boolean;
+  canResolve: boolean;
+};
+
 export type TicketPerson = {
   membershipId: string;
   profile: UserProfile;
@@ -64,6 +77,44 @@ export type TicketDetailResult =
   | { kind: "found"; ticket: TicketDetailData }
   | { kind: "forbidden" }
   | { kind: "not-found" };
+
+export type ResolveTicketInput = {
+  preventiveAction: string;
+  rootCause: string;
+  ticketId: string;
+};
+
+export type RejectTicketInput = {
+  reason: string;
+  ticketId: string;
+};
+
+export type EditTicketInput = {
+  description: string;
+  existingImageUrls: string[];
+  imageUrls: string[];
+  locationDetail: string;
+  severity: TicketSeverity;
+  specialty: TicketSpecialty;
+  summary: string;
+  ticketId: string;
+};
+
+export type ReassignTicketInput = {
+  assigneeMembershipId: string;
+  reason: string;
+  ticketId: string;
+};
+
+export type ReopenTicketInput = {
+  reason: string;
+  ticketId: string;
+};
+
+export type TicketAssigneeCandidate = {
+  membershipId: string;
+  profile: UserProfile;
+};
 
 export const ticketStatusLabels: Record<TicketStatus, string> = {
   completed: "已完成",

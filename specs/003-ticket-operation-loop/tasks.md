@@ -18,10 +18,10 @@
 
 **目的**: 确认阶段 3 实现落点、当前技术栈和本地 Next.js 16 文档约束。
 
-- [ ] T001 查阅 `node_modules/next/dist/docs/` 中 Server Actions、forms、redirect、revalidatePath 相关本地文档，并在 `specs/003-ticket-operation-loop/research.md` 确认实现注意事项
-- [ ] T002 对照 `specs/003-ticket-operation-loop/plan.md` 确认阶段 3 只修改 `app/actions.ts`、`app/page.tsx`、`components/tickets/`、`lib/tickets/`、`lib/supabase/`、`supabase/migrations/`、`progress.md`
-- [ ] T003 [P] 对照 `specs/003-ticket-operation-loop/quickstart.md` 确认可用于验收的阶段 1/2 测试账号和阶段 2 工单样例数据
-- [ ] T004 [P] 对照 `specs/003-ticket-operation-loop/contracts/ticket-operation-flow.md` 确认五类操作表单字段和失败反馈文案
+- [X] T001 查阅 `node_modules/next/dist/docs/` 中 Server Actions、forms、redirect、revalidatePath 相关本地文档，并在 `specs/003-ticket-operation-loop/research.md` 确认实现注意事项
+- [X] T002 对照 `specs/003-ticket-operation-loop/plan.md` 确认阶段 3 只修改 `app/actions.ts`、`app/page.tsx`、`components/tickets/`、`lib/tickets/`、`lib/supabase/`、`supabase/migrations/`、`progress.md`
+- [X] T003 [P] 对照 `specs/003-ticket-operation-loop/quickstart.md` 确认可用于验收的阶段 1/2 测试账号和阶段 2 工单样例数据
+- [X] T004 [P] 对照 `specs/003-ticket-operation-loop/contracts/ticket-operation-flow.md` 确认五类操作表单字段和失败反馈文案
 
 ---
 
@@ -31,15 +31,15 @@
 
 **关键规则**: 本阶段只放共享基础能力；编辑图片、指派和重新打开的专属 UI 放入对应用户故事。
 
-- [ ] T005 在 `supabase/migrations/202607030003_stage3_ticket_operations.sql` 创建阶段 3 最小写入支持，包括 authenticated 必要权限、Storage bucket 或等效图片持久化配置、以及不破坏阶段 2 RLS 的策略说明
-- [ ] T006 在 `lib/tickets/types.ts` 增加 `TicketOperationState`、`TicketOperationPermission`、五类操作输入类型和指派候选人类型
-- [ ] T007 [P] 在 `lib/tickets/formatters.ts` 增加阶段 3 处理记录内容、字段变化和操作错误提示所需的中文格式化函数
-- [ ] T008 在 `lib/tickets/operations.ts` 新建工单操作权限判断、状态流转校验、必填字段校验和处理记录内容生成逻辑
-- [ ] T009 在 `lib/tickets/mutations.ts` 新建服务端写入函数骨架，使用当前身份校验后通过受控 admin client 更新 `tickets` 并插入 `ticket_activity_logs`
-- [ ] T010 在 `app/actions.ts` 新增阶段 3 Server Actions 的共同表单状态类型、当前身份解析、失败返回和成功 `revalidatePath("/")` 处理
-- [ ] T011 在 `components/tickets/ticket-operation-panel.tsx` 新建详情操作区骨架，根据 `TicketOperationPermission` 展示允许按钮和表单容器
-- [ ] T012 在 `components/tickets/ticket-detail.tsx` 接入 `TicketOperationPanel` 并传入当前工单、当前身份、返回视图、筛选和排序上下文
-- [ ] T013 在 `app/page.tsx` 将 `currentIdentity` 传递给工单详情组件，保持 `view`、`ticketId`、`ticketStatus`、`ticketSort` 查询参数模型不变
+- [X] T005 在 `supabase/migrations/202607030003_stage3_ticket_operations.sql` 创建阶段 3 最小写入支持，包括 authenticated 必要权限、Storage bucket 或等效图片持久化配置、以及不破坏阶段 2 RLS 的策略说明
+- [X] T006 在 `lib/tickets/types.ts` 增加 `TicketOperationState`、`TicketOperationPermission`、五类操作输入类型和指派候选人类型
+- [X] T007 [P] 在 `lib/tickets/formatters.ts` 增加阶段 3 处理记录内容、字段变化和操作错误提示所需的中文格式化函数
+- [X] T008 在 `lib/tickets/operations.ts` 新建工单操作权限判断、状态流转校验、必填字段校验和处理记录内容生成逻辑
+- [X] T009 在 `lib/tickets/mutations.ts` 新建服务端写入函数骨架，使用当前身份校验后通过受控 admin client 更新 `tickets` 并插入 `ticket_activity_logs`
+- [X] T010 在 `app/actions.ts` 新增阶段 3 Server Actions 的共同表单状态类型、当前身份解析、失败返回和成功 `revalidatePath("/")` 处理
+- [X] T011 在 `components/tickets/ticket-operation-panel.tsx` 新建详情操作区骨架，根据 `TicketOperationPermission` 展示允许按钮和表单容器
+- [X] T012 在 `components/tickets/ticket-detail.tsx` 接入 `TicketOperationPanel` 并传入当前工单、当前身份、返回视图、筛选和排序上下文
+- [X] T013 在 `app/page.tsx` 将 `currentIdentity` 传递给工单详情组件，保持 `view`、`ticketId`、`ticketStatus`、`ticketSort` 查询参数模型不变
 
 **检查点**: P1 解决/拒绝工单可以开始实现。
 
@@ -53,13 +53,13 @@
 
 ### 实现任务
 
-- [ ] T014 [P] [US1] 在 `components/tickets/ticket-resolve-form.tsx` 创建解决工单表单，包含问题归因必填、预防建议选填、提交 pending 和错误提示
-- [ ] T015 [P] [US1] 在 `components/tickets/ticket-reject-form.tsx` 创建拒绝工单表单，包含拒绝原因必填、提交 pending 和错误提示
-- [ ] T016 [US1] 在 `app/actions.ts` 实现 `resolveTicketAction` 和 `rejectTicketAction`，解析 `FormData` 并调用 `lib/tickets/mutations.ts`
-- [ ] T017 [US1] 在 `lib/tickets/mutations.ts` 实现解决工单写入：校验当前责任人或管理员、状态为待处理、写入 `root_cause`/`preventive_action`、状态改为 `completed`、新增 `resolved` 处理记录
-- [ ] T018 [US1] 在 `lib/tickets/mutations.ts` 实现拒绝工单写入：校验当前责任人或管理员、状态为待处理、状态改为 `rejected`、新增 `rejected` 处理记录
-- [ ] T019 [US1] 在 `components/tickets/ticket-operation-panel.tsx` 接入解决和拒绝表单，并确保已完成或已拒绝工单不展示解决/拒绝入口
-- [ ] T020 [US1] 按 `specs/003-ticket-operation-loop/quickstart.md` 验收路径 1 和路径 2 人工走通解决/拒绝流程并记录发现的问题到 `progress.md`
+- [X] T014 [P] [US1] 在 `components/tickets/ticket-resolve-form.tsx` 创建解决工单表单，包含问题归因必填、预防建议选填、提交 pending 和错误提示
+- [X] T015 [P] [US1] 在 `components/tickets/ticket-reject-form.tsx` 创建拒绝工单表单，包含拒绝原因必填、提交 pending 和错误提示
+- [X] T016 [US1] 在 `app/actions.ts` 实现 `resolveTicketAction` 和 `rejectTicketAction`，解析 `FormData` 并调用 `lib/tickets/mutations.ts`
+- [X] T017 [US1] 在 `lib/tickets/mutations.ts` 实现解决工单写入：校验当前责任人或管理员、状态为待处理、写入 `root_cause`/`preventive_action`、状态改为 `completed`、新增 `resolved` 处理记录
+- [X] T018 [US1] 在 `lib/tickets/mutations.ts` 实现拒绝工单写入：校验当前责任人或管理员、状态为待处理、状态改为 `rejected`、新增 `rejected` 处理记录
+- [X] T019 [US1] 在 `components/tickets/ticket-operation-panel.tsx` 接入解决和拒绝表单，并确保已完成或已拒绝工单不展示解决/拒绝入口
+- [X] T020 [US1] 按 `specs/003-ticket-operation-loop/quickstart.md` 验收路径 1 和路径 2 人工走通解决/拒绝流程并记录发现的问题到 `progress.md`
 
 **检查点**: P1 可独立演示，达到阶段 3 MVP 最小闭环。
 
@@ -73,13 +73,13 @@
 
 ### 实现任务
 
-- [ ] T021 [P] [US2] 在 `components/tickets/ticket-edit-form.tsx` 创建编辑工单表单，覆盖严重程度、专业类型、问题描述、详细位置、问题详情、保留图片和新增图片
-- [ ] T022 [P] [US2] 在 `components/tickets/ticket-image-editor.tsx` 创建现场图片编辑组件，支持已有图片删除、新图片选择、图片数量展示和错误提示
-- [ ] T023 [US2] 在 `lib/tickets/image-storage.ts` 新建图片上传辅助函数，将阶段 3 新增图片转换为可写入 `tickets.image_urls` 的可访问 URL
-- [ ] T024 [US2] 在 `app/actions.ts` 实现 `editTicketAction`，解析编辑字段、保留图片 URL 和新增图片
-- [ ] T025 [US2] 在 `lib/tickets/mutations.ts` 实现编辑工单写入：校验发起人/当前责任人/管理员、状态为待处理、仅更新问题信息字段和 `image_urls`、新增 `edited` 处理记录
-- [ ] T026 [US2] 在 `components/tickets/ticket-operation-panel.tsx` 接入编辑模式、保存和取消流程，并确保只读字段不可编辑
-- [ ] T027 [US2] 按 `specs/003-ticket-operation-loop/quickstart.md` 验收路径 3 人工走通编辑字段、图片新增/删除、保存和取消流程并记录发现的问题到 `progress.md`
+- [X] T021 [P] [US2] 在 `components/tickets/ticket-edit-form.tsx` 创建编辑工单表单，覆盖严重程度、专业类型、问题描述、详细位置、问题详情、保留图片和新增图片
+- [X] T022 [P] [US2] 在 `components/tickets/ticket-image-editor.tsx` 创建现场图片编辑组件，支持已有图片删除、新图片选择、图片数量展示和错误提示
+- [X] T023 [US2] 在 `lib/tickets/image-storage.ts` 新建图片上传辅助函数，将阶段 3 新增图片转换为可写入 `tickets.image_urls` 的可访问 URL
+- [X] T024 [US2] 在 `app/actions.ts` 实现 `editTicketAction`，解析编辑字段、保留图片 URL 和新增图片
+- [X] T025 [US2] 在 `lib/tickets/mutations.ts` 实现编辑工单写入：校验发起人/当前责任人/管理员、状态为待处理、仅更新问题信息字段和 `image_urls`、新增 `edited` 处理记录
+- [X] T026 [US2] 在 `components/tickets/ticket-operation-panel.tsx` 接入编辑模式、保存和取消流程，并确保只读字段不可编辑
+- [X] T027 [US2] 按 `specs/003-ticket-operation-loop/quickstart.md` 验收路径 3 人工走通编辑字段、图片新增/删除、保存和取消流程并记录发现的问题到 `progress.md`
 
 **检查点**: P1 和 US2 均可独立演示。
 
@@ -93,13 +93,13 @@
 
 ### 实现任务
 
-- [ ] T028 [P] [US3] 在 `lib/tickets/queries.ts` 增加当前项目施工方指派候选人查询函数，排除当前责任人
-- [ ] T029 [P] [US3] 在 `components/tickets/ticket-reassign-form.tsx` 创建指派他人表单，包含候选施工方选择、指派原因必填、无候选人状态和错误提示
-- [ ] T030 [US3] 在 `app/page.tsx` 为打开的工单详情加载指派候选人，并只在有权指派时传入组件
-- [ ] T031 [US3] 在 `app/actions.ts` 实现 `reassignTicketAction`，解析新责任人和指派原因
-- [ ] T032 [US3] 在 `lib/tickets/mutations.ts` 实现指派写入：校验当前责任人或管理员、状态为待处理、新责任人为当前项目另一名施工方、更新 `assignee_membership_id`、新增 `reassigned` 处理记录
-- [ ] T033 [US3] 在 `components/tickets/ticket-operation-panel.tsx` 接入指派表单，并处理无其他施工方可指派的禁用或提示状态
-- [ ] T034 [US3] 按 `specs/003-ticket-operation-loop/quickstart.md` 验收路径 4 人工走通指派、原责任人列表消失、新责任人列表出现并记录发现的问题到 `progress.md`
+- [X] T028 [P] [US3] 在 `lib/tickets/queries.ts` 增加当前项目施工方指派候选人查询函数，排除当前责任人
+- [X] T029 [P] [US3] 在 `components/tickets/ticket-reassign-form.tsx` 创建指派他人表单，包含候选施工方选择、指派原因必填、无候选人状态和错误提示
+- [X] T030 [US3] 在 `app/page.tsx` 为打开的工单详情加载指派候选人，并只在有权指派时传入组件
+- [X] T031 [US3] 在 `app/actions.ts` 实现 `reassignTicketAction`，解析新责任人和指派原因
+- [X] T032 [US3] 在 `lib/tickets/mutations.ts` 实现指派写入：校验当前责任人或管理员、状态为待处理、新责任人为当前项目另一名施工方、更新 `assignee_membership_id`、新增 `reassigned` 处理记录
+- [X] T033 [US3] 在 `components/tickets/ticket-operation-panel.tsx` 接入指派表单，并处理无其他施工方可指派的禁用或提示状态
+- [X] T034 [US3] 按 `specs/003-ticket-operation-loop/quickstart.md` 验收路径 4 人工走通指派、原责任人列表消失、新责任人列表出现并记录发现的问题到 `progress.md`
 
 **检查点**: P1、US2、US3 均可独立演示。
 
@@ -113,11 +113,11 @@
 
 ### 实现任务
 
-- [ ] T035 [P] [US4] 在 `components/tickets/ticket-reopen-form.tsx` 创建重新打开表单，包含重新打开原因必填、提交 pending 和错误提示
-- [ ] T036 [US4] 在 `app/actions.ts` 实现 `reopenTicketAction`，解析工单 id 和重新打开原因
-- [ ] T037 [US4] 在 `lib/tickets/mutations.ts` 实现重新打开写入：校验发起人或管理员、状态为已完成或已拒绝、状态改为 `pending`、责任人保持不变、新增 `reopened` 处理记录
-- [ ] T038 [US4] 在 `components/tickets/ticket-operation-panel.tsx` 接入重新打开表单，并确保待处理工单不展示重新打开入口
-- [ ] T039 [US4] 按 `specs/003-ticket-operation-loop/quickstart.md` 验收路径 5 人工走通已完成和已拒绝工单重新打开并记录发现的问题到 `progress.md`
+- [X] T035 [P] [US4] 在 `components/tickets/ticket-reopen-form.tsx` 创建重新打开表单，包含重新打开原因必填、提交 pending 和错误提示
+- [X] T036 [US4] 在 `app/actions.ts` 实现 `reopenTicketAction`，解析工单 id 和重新打开原因
+- [X] T037 [US4] 在 `lib/tickets/mutations.ts` 实现重新打开写入：校验发起人或管理员、状态为已完成或已拒绝、状态改为 `pending`、责任人保持不变、新增 `reopened` 处理记录
+- [X] T038 [US4] 在 `components/tickets/ticket-operation-panel.tsx` 接入重新打开表单，并确保待处理工单不展示重新打开入口
+- [X] T039 [US4] 按 `specs/003-ticket-operation-loop/quickstart.md` 验收路径 5 人工走通已完成和已拒绝工单重新打开并记录发现的问题到 `progress.md`
 
 **检查点**: 已结束工单可恢复到待处理并重新进入责任人列表。
 
@@ -131,11 +131,11 @@
 
 ### 实现任务
 
-- [ ] T040 [US5] 在 `lib/tickets/operations.ts` 统一导出按钮可见性和服务端提交共用的 `getTicketOperationPermission` 规则
-- [ ] T041 [US5] 在 `components/tickets/ticket-operation-panel.tsx` 使用 `getTicketOperationPermission` 的结果统一控制编辑、解决、拒绝、指派、重新打开入口
-- [ ] T042 [US5] 在 `lib/tickets/mutations.ts` 为所有写入路径补齐工单不存在、无权限、状态过期、项目不匹配和必填字段缺失的统一错误返回
-- [ ] T043 [US5] 在 `components/tickets/ticket-detail.tsx` 和 `components/tickets/ticket-operation-panel.tsx` 确保操作成功后返回详情或列表时状态、责任人、处理信息和处理记录显示最新结果
-- [ ] T044 [US5] 按 `specs/003-ticket-operation-loop/quickstart.md` 验收路径 6 和异常验收人工核对三类角色、三种状态、越权提交和状态过期提示并记录发现的问题到 `progress.md`
+- [X] T040 [US5] 在 `lib/tickets/operations.ts` 统一导出按钮可见性和服务端提交共用的 `getTicketOperationPermission` 规则
+- [X] T041 [US5] 在 `components/tickets/ticket-operation-panel.tsx` 使用 `getTicketOperationPermission` 的结果统一控制编辑、解决、拒绝、指派、重新打开入口
+- [X] T042 [US5] 在 `lib/tickets/mutations.ts` 为所有写入路径补齐工单不存在、无权限、状态过期、项目不匹配和必填字段缺失的统一错误返回
+- [X] T043 [US5] 在 `components/tickets/ticket-detail.tsx` 和 `components/tickets/ticket-operation-panel.tsx` 确保操作成功后返回详情或列表时状态、责任人、处理信息和处理记录显示最新结果
+- [X] T044 [US5] 按 `specs/003-ticket-operation-loop/quickstart.md` 验收路径 6 和异常验收人工核对三类角色、三种状态、越权提交和状态过期提示并记录发现的问题到 `progress.md`
 
 **检查点**: 所有阶段 3 操作入口、服务端权限和失败反馈一致。
 
@@ -145,11 +145,11 @@
 
 **目的**: 完成演示交付前的必要整理和项目进度更新。
 
-- [ ] T045 [P] 更新 `specs/003-ticket-operation-loop/quickstart.md`，补充实际开发服务地址、迁移/Storage 应用方式和最终人工验收结果
-- [ ] T046 [P] 更新 `progress.md` 的阶段 3 状态、完成日期、主要交付、验证结果、遗留问题和下一阶段入口条件
-- [ ] T047 移除 `components/tickets/`、`lib/tickets/`、`app/actions.ts` 中未使用代码、占位文案和与阶段 3 无关的临时逻辑
-- [ ] T048 运行 `npm run check` 并修复 `app/`、`components/`、`lib/`、`supabase/` 中出现的 TypeScript、Biome format 或 lint 问题
-- [ ] T049 按 `specs/003-ticket-operation-loop/quickstart.md` 完成阶段 3 全路径人工验收，并在 `progress.md` 记录无法运行的检查及原因（如有）
+- [X] T045 [P] 更新 `specs/003-ticket-operation-loop/quickstart.md`，补充实际开发服务地址、迁移/Storage 应用方式和最终人工验收结果
+- [X] T046 [P] 更新 `progress.md` 的阶段 3 状态、完成日期、主要交付、验证结果、遗留问题和下一阶段入口条件
+- [X] T047 移除 `components/tickets/`、`lib/tickets/`、`app/actions.ts` 中未使用代码、占位文案和与阶段 3 无关的临时逻辑
+- [X] T048 运行 `npm run check` 并修复 `app/`、`components/`、`lib/`、`supabase/` 中出现的 TypeScript、Biome format 或 lint 问题
+- [X] T049 按 `specs/003-ticket-operation-loop/quickstart.md` 完成阶段 3 全路径人工验收，并在 `progress.md` 记录无法运行的检查及原因（如有）
 
 ---
 

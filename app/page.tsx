@@ -20,6 +20,7 @@ import {
 import {
   getAdminTickets,
   getMemberTickets,
+  getReassignCandidates,
   getTicketDetail,
 } from "@/lib/tickets/queries";
 import { parseTicketQueryParams } from "@/lib/tickets/query-params";
@@ -80,6 +81,13 @@ export default async function Home({ searchParams }: HomeProps) {
         ticketQuery.ticketId ? getTicketDetail(ticketQuery.ticketId) : null,
       ])
     : [undefined, undefined, null];
+  const reassignCandidates =
+    ticketDetail?.kind === "found"
+      ? await getReassignCandidates(
+          currentIdentity,
+          ticketDetail.ticket.assignee.membershipId,
+        )
+      : [];
 
   return (
     <AppShell
@@ -92,6 +100,7 @@ export default async function Home({ searchParams }: HomeProps) {
           adminTickets={adminTickets}
           currentIdentity={currentIdentity}
           memberTickets={memberTickets}
+          reassignCandidates={reassignCandidates}
           ticketDetail={ticketDetail}
           ticketQuery={ticketQuery}
           view={activeView}

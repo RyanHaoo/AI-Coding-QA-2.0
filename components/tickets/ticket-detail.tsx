@@ -5,6 +5,8 @@ import { ArrowLeft, ImageIcon } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { TicketActivityList } from "@/components/tickets/ticket-activity-list";
+import { TicketOperationPanel } from "@/components/tickets/ticket-operation-panel";
+import type { ProjectMembership } from "@/lib/identity/types";
 import {
   formatTicketDateTime,
   formatTicketSeverity,
@@ -14,6 +16,7 @@ import {
 import { buildTicketHref } from "@/lib/tickets/query-params";
 import type {
   TicketDetailData,
+  TicketAssigneeCandidate,
   TicketSort,
   TicketStatusFilter,
 } from "@/lib/tickets/types";
@@ -21,6 +24,8 @@ import { cn } from "@/lib/utils";
 
 type TicketDetailProps = {
   baseView: "tickets" | "admin-tickets";
+  currentIdentity: ProjectMembership;
+  reassignCandidates: TicketAssigneeCandidate[];
   sort?: TicketSort;
   status?: TicketStatusFilter;
   ticket: TicketDetailData;
@@ -28,6 +33,8 @@ type TicketDetailProps = {
 
 export function TicketDetail({
   baseView,
+  currentIdentity,
+  reassignCandidates,
   sort = "newest",
   status = "pending",
   ticket,
@@ -122,6 +129,7 @@ export function TicketDetail({
                     height={360}
                     key={url}
                     src={url}
+                    unoptimized={url.startsWith("http")}
                     width={640}
                   />
                 ))}
@@ -138,6 +146,12 @@ export function TicketDetail({
             ]}
           />
         </InfoSection>
+
+        <TicketOperationPanel
+          candidates={reassignCandidates}
+          currentIdentity={currentIdentity}
+          ticket={ticket}
+        />
       </div>
 
       <aside className="grid content-start gap-3">

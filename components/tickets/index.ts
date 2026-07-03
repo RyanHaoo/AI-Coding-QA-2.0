@@ -7,5 +7,6 @@ export {
 } from "@/components/tickets/ticket-detail-state";
 export { TicketList } from "@/components/tickets/ticket-list";
 export { TicketListItem } from "@/components/tickets/ticket-list-item";
+export { TicketOperationPanel } from "@/components/tickets/ticket-operation-panel";
 export { TicketSortControl } from "@/components/tickets/ticket-sort-control";
 export { TicketStatusFilter } from "@/components/tickets/ticket-status-filter";
