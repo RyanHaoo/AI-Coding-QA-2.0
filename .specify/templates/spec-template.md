@@ -1,131 +1,107 @@
-# Feature Specification: [FEATURE NAME]
+# 功能规格: [FEATURE NAME]
 
-**Feature Branch**: `[###-feature-name]`
+**功能分支**: `[###-feature-name]`
 
-**Created**: [DATE]
+**创建日期**: [DATE]
 
-**Status**: Draft
+**状态**: Draft
 
-**Input**: User description: "$ARGUMENTS"
+**输入**: 用户描述：“$ARGUMENTS”
 
-## User Scenarios & Testing *(mandatory)*
+## 用户场景与验收 *(mandatory)*
 
 <!--
-  IMPORTANT: User stories should be PRIORITIZED as user journeys ordered by importance.
-  Each user story/journey must be INDEPENDENTLY TESTABLE - meaning if you implement just ONE of them,
-  you should still have a viable MVP (Minimum Viable Product) that delivers value.
-
-  Assign priorities (P1, P2, P3, etc.) to each story, where P1 is the most critical.
-  Think of each story as a standalone slice of functionality that can be:
-  - Developed independently
-  - Tested independently
-  - Deployed independently
-  - Demonstrated to users independently
+  用户故事必须按业务价值排序，P1 是最小可演示闭环。
+  每个用户故事都应能独立演示和验收；不要求编写自动化测试，除非用户明确要求。
 -->
 
-### User Story 1 - [Brief Title] (Priority: P1)
+### 用户故事 1 - [简短标题]（优先级: P1）
 
-[Describe this user journey in plain language]
+[用自然语言描述用户目标和完整操作路径]
 
-**Why this priority**: [Explain the value and why it has this priority level]
+**优先级理由**: [说明它为什么是 MVP 演示核心路径]
 
-**Independent Test**: [Describe how this can be tested independently - e.g., "Can be fully tested by [specific action] and delivers [specific value]"]
+**独立验收**: [说明如何通过人工操作或静态结果独立确认该故事可用]
 
-**Acceptance Scenarios**:
+**验收场景**:
 
-1. **Given** [initial state], **When** [action], **Then** [expected outcome]
-2. **Given** [initial state], **When** [action], **Then** [expected outcome]
+1. **Given** [初始状态]，**When** [用户操作]，**Then** [可观察结果]
+2. **Given** [初始状态]，**When** [用户操作]，**Then** [可观察结果]
 
 ---
 
-### User Story 2 - [Brief Title] (Priority: P2)
+### 用户故事 2 - [简短标题]（优先级: P2）
 
-[Describe this user journey in plain language]
+[描述增强路径；必须说明它是否依赖 P1]
 
-**Why this priority**: [Explain the value and why it has this priority level]
+**优先级理由**: [说明相对 P1 的价值和取舍]
 
-**Independent Test**: [Describe how this can be tested independently]
+**独立验收**: [说明如何独立演示或验收]
 
-**Acceptance Scenarios**:
+**验收场景**:
 
-1. **Given** [initial state], **When** [action], **Then** [expected outcome]
-
----
-
-### User Story 3 - [Brief Title] (Priority: P3)
-
-[Describe this user journey in plain language]
-
-**Why this priority**: [Explain the value and why it has this priority level]
-
-**Independent Test**: [Describe how this can be tested independently]
-
-**Acceptance Scenarios**:
-
-1. **Given** [initial state], **When** [action], **Then** [expected outcome]
+1. **Given** [初始状态]，**When** [用户操作]，**Then** [可观察结果]
 
 ---
 
-[Add more user stories as needed, each with an assigned priority]
+### 用户故事 3 - [简短标题]（优先级: P3）
 
-### Edge Cases
+[描述可延后能力或打磨项]
+
+**优先级理由**: [说明为什么可以排在 P3]
+
+**独立验收**: [说明如何独立演示或验收]
+
+**验收场景**:
+
+1. **Given** [初始状态]，**When** [用户操作]，**Then** [可观察结果]
+
+---
+
+[按需增加更多用户故事，并保持优先级顺序]
+
+### 边界情况
+
+<!-- 仅列出演示核心路径可能遇到且必须处理的边界，不做生产级穷举。 -->
+
+- 当 [核心输入为空或缺失] 时，系统必须 [可观察行为]。
+- 当 [关键数据不可用] 时，系统必须 [可观察行为]。
+
+## 需求 *(mandatory)*
+
+### 功能需求
+
+- **FR-001**: 系统必须 [具体能力，例如“录入施工质检问题”]
+- **FR-002**: 系统必须 [具体能力，例如“展示质检情报摘要”]
+- **FR-003**: 用户必须能够 [关键交互，例如“按项目查看问题列表”]
+- **FR-004**: 系统必须 [数据要求，例如“保存当前演示所需的检查记录”]
+- **FR-005**: 系统必须 [行为要求，例如“在缺少必要输入时给出清晰提示”]
+
+*需求不清时必须标记：*
+
+- **FR-006**: 系统必须 [NEEDS CLARIFICATION: 说明缺失的信息和候选解释]
+
+### 关键实体 *(涉及数据时填写)*
+
+- **[实体 1]**: [它代表什么、关键字段、与演示路径的关系]
+- **[实体 2]**: [它代表什么、与其他实体的关系]
+
+## 成功标准 *(mandatory)*
+
+### 可衡量结果
+
+- **SC-001**: [例如“演示者可在 3 分钟内完成 P1 核心路径”]
+- **SC-002**: [例如“核心页面在本地环境无 TypeScript 错误”]
+- **SC-003**: [例如“用户可以从输入信息得到明确的质检结论或下一步建议”]
+- **SC-004**: [例如“静态检查命令通过，或文档变更完成一致性检查”]
+
+## 假设
 
 <!--
-  ACTION REQUIRED: The content in this section represents placeholders.
-  Fill them out with the right edge cases.
+  当需求没有说明时，使用合理默认值，但必须显式记录，避免变成隐性承诺。
 -->
 
-- What happens when [boundary condition]?
-- How does system handle [error scenario]?
-
-## Requirements *(mandatory)*
-
-<!--
-  ACTION REQUIRED: The content in this section represents placeholders.
-  Fill them out with the right functional requirements.
--->
-
-### Functional Requirements
-
-- **FR-001**: System MUST [specific capability, e.g., "allow users to create accounts"]
-- **FR-002**: System MUST [specific capability, e.g., "validate email addresses"]
-- **FR-003**: Users MUST be able to [key interaction, e.g., "reset their password"]
-- **FR-004**: System MUST [data requirement, e.g., "persist user preferences"]
-- **FR-005**: System MUST [behavior, e.g., "log all security events"]
-
-*Example of marking unclear requirements:*
-
-- **FR-006**: System MUST authenticate users via [NEEDS CLARIFICATION: auth method not specified - email/password, SSO, OAuth?]
-- **FR-007**: System MUST retain user data for [NEEDS CLARIFICATION: retention period not specified]
-
-### Key Entities *(include if feature involves data)*
-
-- **[Entity 1]**: [What it represents, key attributes without implementation]
-- **[Entity 2]**: [What it represents, relationships to other entities]
-
-## Success Criteria *(mandatory)*
-
-<!--
-  ACTION REQUIRED: Define measurable success criteria.
-  These must be technology-agnostic and measurable.
--->
-
-### Measurable Outcomes
-
-- **SC-001**: [Measurable metric, e.g., "Users can complete account creation in under 2 minutes"]
-- **SC-002**: [Measurable metric, e.g., "System handles 1000 concurrent users without degradation"]
-- **SC-003**: [User satisfaction metric, e.g., "90% of users successfully complete primary task on first attempt"]
-- **SC-004**: [Business metric, e.g., "Reduce support tickets related to [X] by 50%"]
-
-## Assumptions
-
-<!--
-  ACTION REQUIRED: The content in this section represents placeholders.
-  Fill them out with the right assumptions based on reasonable defaults
-  chosen when the feature description did not specify certain details.
--->
-
-- [Assumption about target users, e.g., "Users have stable internet connectivity"]
-- [Assumption about scope boundaries, e.g., "Mobile support is out of scope for v1"]
-- [Assumption about data/environment, e.g., "Existing authentication system will be reused"]
-- [Dependency on existing system/service, e.g., "Requires access to the existing user profile API"]
+- [目标用户假设，例如“演示对象熟悉施工质检业务术语”]
+- [范围边界假设，例如“本 MVP 不覆盖完整权限体系”]
+- [数据假设，例如“演示数据可使用样例数据或 Supabase 当前环境数据”]
+- [依赖假设，例如“本地 .env.local 已配置所需 Supabase 环境变量”]

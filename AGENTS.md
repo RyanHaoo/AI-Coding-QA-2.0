@@ -21,6 +21,7 @@
 
 - 已使用 `uvx --from git+https://github.com/github/spec-kit.git specify init --here --force --integration codex --ignore-agent-tools --script ps` 初始化。
 - spec-kit 脚本位于 `.specify/scripts/powershell`，技能位于 `.agents/skills`。
+- 项目宪章位于 [.specify/memory/constitution.md](.specify/memory/constitution.md)，后续 spec、plan、tasks 必须与其保持一致。
 
 ## 注意事项
 

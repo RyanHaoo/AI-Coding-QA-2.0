@@ -1,50 +1,59 @@
-# [PROJECT_NAME] Constitution
-<!-- Example: Spec Constitution, TaskFlow Constitution, etc. -->
+<!--
+Sync Impact Report
+- 版本变更：未初始化模板 -> 1.0.0
+- 修改原则：模板占位 -> I. MVP核心路径优先；II. 需求驱动快速实现；III. 静态检查即质量门槛；IV. 避免过度设计与防御性编程；V. 中文文档统一
+- 新增章节：MVP范围约束；交付流程与质量门槛
+- 移除章节：无
+- 模板同步：
+  - .specify/templates/constitution-template.md：已更新
+  - .specify/templates/plan-template.md：已更新
+  - .specify/templates/spec-template.md：已更新
+  - .specify/templates/tasks-template.md：已更新
+  - .specify/templates/commands/*.md：不存在
+- 后续 TODO：无
+-->
+
+# 建筑施工质检情报员宪章
 
 ## Core Principles
 
-### [PRINCIPLE_1_NAME]
-<!-- Example: I. Library-First -->
-[PRINCIPLE_1_DESCRIPTION]
-<!-- Example: Every feature starts as a standalone library; Libraries must be self-contained, independently testable, documented; Clear purpose required - no organizational-only libraries -->
+### I. MVP核心路径优先
+所有功能必须服务于“建筑施工质检情报员”演示核心路径：输入或管理质检相关信息，生成或展示可用于项目质检决策的情报或结论，并能在本地演示环境中闭环验证。每个规格、计划和任务必须标注它支撑的最小可演示用户旅程；无法支撑演示主链路的内容必须延后。理由：当前目标是复杂项目的 MVP 演示实现，交付速度和路径正确性优先于完整产品形态。
 
-### [PRINCIPLE_2_NAME]
-<!-- Example: II. CLI Interface -->
-[PRINCIPLE_2_DESCRIPTION]
-<!-- Example: Every library exposes functionality via CLI; Text in/out protocol: stdin/args → stdout, errors → stderr; Support JSON + human-readable formats -->
+### II. 需求驱动快速实现
+实现必须直接对应已给定需求和 P1 用户故事，优先使用现有 Next.js App Router、TypeScript、Tailwind CSS v4、Biome、shadcn/ui、lucide-react、Supabase 等项目内既有技术。不得引入新的架构层、状态管理方案或服务边界，除非需求无法用现有结构完成。理由：减少未知数，保证短周期内可以完成演示。
 
-### [PRINCIPLE_3_NAME]
-<!-- Example: III. Test-First (NON-NEGOTIABLE) -->
-[PRINCIPLE_3_DESCRIPTION]
-<!-- Example: TDD mandatory: Tests written → User approved → Tests fail → Then implement; Red-Green-Refactor cycle strictly enforced -->
+### III. 静态检查即质量门槛
+每次交付前必须至少通过 TypeScript 类型检查和 Biome lint/format 相关静态检查；变更只涉及文档时，必须完成文档一致性和占位符检查。测试不是默认门槛，不要求 TDD、单元测试、集成测试或端到端测试，除非具体需求明确指定。理由：本阶段用静态检查控制基本质量和构建风险，避免测试成本压过 MVP 交付。
 
-### [PRINCIPLE_4_NAME]
-<!-- Example: IV. Integration Testing -->
-[PRINCIPLE_4_DESCRIPTION]
-<!-- Example: Focus areas requiring integration tests: New library contract tests, Contract changes, Inter-service communication, Shared schemas -->
+### IV. 避免过度设计与防御性编程
+代码必须保持直观、局部和可读，允许为演示场景采用硬编码样例、轻量数据结构或单文件实现。不得为未出现的多租户、权限矩阵、审计、缓存、国际化、可访问性、复杂错误恢复、扩展插件系统等未来场景预留架构。输入校验和错误处理必须覆盖演示核心路径会遇到的失败，不要求穷尽所有边界。理由：当前不追求可扩展性和生产级韧性，避免把复杂度提前带入项目。
 
-### [PRINCIPLE_5_NAME]
-<!-- Example: V. Observability, VI. Versioning & Breaking Changes, VII. Simplicity -->
-[PRINCIPLE_5_DESCRIPTION]
-<!-- Example: Text I/O ensures debuggability; Structured logging required; Or: MAJOR.MINOR.BUILD format; Or: Start simple, YAGNI principles -->
+### V. 中文文档统一
+所有 spec-kit 文档、项目计划、任务清单、需求说明和开发说明必须使用中文编写；代码标识符、库名、命令、文件路径和外部 API 名称可以保留英文。面向用户的演示文案必须优先使用中文，除非引用第三方产品原文。理由：项目协作和教学场景以中文沟通为主，减少转译误差。
 
-## [SECTION_2_NAME]
-<!-- Example: Additional Constraints, Security Requirements, Performance Standards, etc. -->
+## MVP范围约束
 
-[SECTION_2_CONTENT]
-<!-- Example: Technology stack requirements, compliance standards, deployment policies, etc. -->
+- 必须优先完成建筑施工质检情报员的端到端演示闭环，而不是完整后台系统。
+- 必须把 P1 用户故事作为可演示最小版本；P2/P3 只有在不影响 P1 交付时进入实施。
+- 不要求编写测试；如需求明确要求测试，测试任务必须限制在核心路径验证。
+- 不要求无障碍专项适配；界面只需满足正常桌面和移动演示场景的可用性。
+- 不要求可扩展性设计；只有已有需求直接触发时才增加抽象或通用化能力。
+- 必须记录关键假设，避免把未确认需求写成已承诺能力。
 
-## [SECTION_3_NAME]
-<!-- Example: Development Workflow, Review Process, Quality Gates, etc. -->
+## 交付流程与质量门槛
 
-[SECTION_3_CONTENT]
-<!-- Example: Code review requirements, testing gates, deployment approval process, etc. -->
+- 规格必须用中文描述用户目标、验收场景、功能需求、成功标准和假设。
+- 计划必须声明真实技术栈、核心路径、数据来源、静态检查命令和任何偏离宪章的原因。
+- 任务必须按 P1 到 P3 排序，先完成可演示闭环，再处理增强项和打磨项。
+- 实施必须优先复用项目现有结构和组件；新增依赖必须说明它解决的具体问题。
+- 交付前必须运行适用的静态检查；如果因环境或范围无法运行，必须在结果中明确说明。
+- 文档变更必须检查无未解释占位符、版本日期一致、模板与宪章一致。
 
 ## Governance
-<!-- Example: Constitution supersedes all other practices; Amendments require documentation, approval, migration plan -->
 
-[GOVERNANCE_RULES]
-<!-- Example: All PRs/reviews must verify compliance; Complexity must be justified; Use [GUIDANCE_FILE] for runtime development guidance -->
+本宪章优先于 spec、plan、tasks 和临时开发偏好；发生冲突时必须以本宪章为准，或先修订宪章再继续执行。修订必须说明原因、影响范围、版本变化和需要同步的模板文件，并更新顶部 Sync Impact Report。
 
-**Version**: [CONSTITUTION_VERSION] | **Ratified**: [RATIFICATION_DATE] | **Last Amended**: [LAST_AMENDED_DATE]
-<!-- Example: Version: 2.1.1 | Ratified: 2025-06-13 | Last Amended: 2025-07-16 -->
+版本遵循语义化规则：MAJOR 用于移除或重定义核心原则；MINOR 用于新增原则、章节或实质扩展治理要求；PATCH 用于措辞澄清、错别字和非语义调整。每次使用 speckit 生成或更新规格、计划、任务时，必须检查 Constitution Check 是否仍满足本宪章。
+
+**Version**: 1.0.0 | **Ratified**: 2026-07-03 | **Last Amended**: 2026-07-03
