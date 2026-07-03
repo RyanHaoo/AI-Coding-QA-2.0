@@ -101,6 +101,7 @@ uvx --from git+https://github.com/github/spec-kit.git specify init --here --forc
 - 本次初始化使用了本地 Next.js、shadcn/ui 与内置浏览器 skill，未使用 context7 library id。
 - 本次 Supabase 初始化查询了 Supabase changelog、Supabase MCP `searchDocs` 的 Next.js SSR client 文档，以及本地 Next.js 16 `proxy` 文档；未使用 context7 library id。
 - 阶段 4 智能助手计划查询了 context7 library id：`/websites/ai-sdk_dev`、`/websites/langchain_oss_javascript`。
+- 阶段 6 Coze 知识接口计划与实现查询了 context7 library id：`/websites/ai-sdk_dev`、`/websites/langchain_oss_javascript`。
 
 ## 已安装项目 skill
 

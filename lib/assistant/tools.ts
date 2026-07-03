@@ -5,6 +5,7 @@ import type {
   AssistantRuntimeContext,
   TicketDraft,
 } from "@/lib/assistant/types";
+import { queryCozeConstructionKnowledge } from "@/lib/assistant/coze";
 import { createTicketFromAssistantDraft } from "@/lib/tickets/creation";
 import {
   listProjectBuilders,
@@ -50,6 +51,27 @@ function missingDraftFields(draft: {
 
 export function createAssistantTools(context: AssistantRuntimeContext) {
   return [
+    tool(
+      async ({ contextSummary, question }) =>
+        await queryCozeConstructionKnowledge({
+          contextSummary,
+          question,
+        }),
+      {
+        description:
+          "调用 Coze/扣子知识子 Agent 回答施工规范、工艺标准、质量要求、施工做法和现场质量判断问题。必须只传精练问题和当前身份有权上下文摘要。",
+        name: "query_construction_knowledge",
+        schema: z.object({
+          contextSummary: z
+            .string()
+            .optional()
+            .describe(
+              "可选。只放当前身份有权查看的工单摘要或现场描述，不放用户 ID、membership ID、secret 或无关历史。",
+            ),
+          question: z.string().describe("精练后的施工质检知识问题。"),
+        }),
+      },
+    ),
     tool(
       async ({ query, status }) => {
         const result = await searchVisibleTickets({
