@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { isToolUIPart, type UIMessage } from "ai";
 
+import { MessageResponse } from "@/components/ai-elements/message";
 import { TicketDraftCard } from "@/components/assistant/ticket-draft-card";
 import { TicketResultList } from "@/components/assistant/ticket-result-list";
 import type { TicketDraft } from "@/lib/assistant/types";
@@ -40,13 +41,14 @@ export function MessageList({
               "grid min-w-0 max-w-[min(100%,42rem)] gap-3 overflow-hidden",
               message.role === "user"
                 ? "max-w-[85%] rounded-lg bg-[#005ac2] px-4 py-3 text-white"
-                : "text-slate-900",
+                : "w-full text-slate-900",
             )}
           >
             {message.parts.map((part, index) => (
               <MessagePart
                 builders={builders}
                 key={`${message.id}-${index}`}
+                messageRole={message.role}
                 onConfirmDraft={onConfirmDraft}
                 part={part}
               />
@@ -60,10 +62,12 @@ export function MessageList({
 
 function MessagePart({
   builders,
+  messageRole,
   onConfirmDraft,
   part,
 }: {
   builders: BuilderCandidate[];
+  messageRole: UIMessage["role"];
   onConfirmDraft: (draft: TicketDraft) => void;
   part: UIMessage["parts"][number];
 }) {
@@ -83,9 +87,15 @@ function MessagePart({
     }
 
     return (
-      <p className="whitespace-pre-wrap break-words text-sm leading-6">
-        {part.text}
-      </p>
+      <div className="break-words text-sm leading-6">
+        {messageRole === "assistant" ? (
+          <MessageResponse data-ai-markdown-response="true">
+            {part.text}
+          </MessageResponse>
+        ) : (
+          <p className="whitespace-pre-wrap">{part.text}</p>
+        )}
+      </div>
     );
   }
 

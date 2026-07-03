@@ -2,6 +2,7 @@
 
 import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport, type FileUIPart, type UIMessage } from "ai";
+import { useLayoutEffect, useRef } from "react";
 
 import { AssistantEmptyState } from "@/components/assistant/assistant-empty-state";
 import { AssistantInput } from "@/components/assistant/assistant-input";
@@ -31,6 +32,16 @@ export function AssistantChat({
     }),
   });
   const busy = status === "submitted" || status === "streaming";
+  const scrollAreaRef = useRef<HTMLDivElement>(null);
+
+  useLayoutEffect(() => {
+    const scrollArea = scrollAreaRef.current;
+    if (!scrollArea) {
+      return;
+    }
+
+    scrollArea.scrollTop = scrollArea.scrollHeight;
+  });
 
   async function send(input: { files: FileUIPart[]; text: string }) {
     await sendMessage({
@@ -59,7 +70,11 @@ export function AssistantChat({
 
   return (
     <div className="mx-auto flex h-full min-h-0 w-full min-w-0 max-w-4xl flex-col overflow-hidden">
-      <div className="min-w-0 flex-1 overflow-y-auto overscroll-contain pb-6">
+      <div
+        data-assistant-scroll-area="true"
+        className="min-w-0 flex-1 overflow-y-auto overscroll-contain pb-6"
+        ref={scrollAreaRef}
+      >
         {messages.length === 0 ? (
           <AssistantEmptyState />
         ) : (
@@ -77,8 +92,22 @@ export function AssistantChat({
       </div>
 
       <div className="min-w-0 shrink-0 border-slate-200 border-t bg-[#f7f9fb]/90 py-4 backdrop-blur">
+        {busy ? <ResponseDots /> : null}
         <AssistantInput disabled={busy} onSend={send} />
       </div>
     </div>
+  );
+}
+
+function ResponseDots() {
+  return (
+    <output
+      aria-label="助手正在响应"
+      className="mb-2 flex h-6 items-center justify-center gap-1 px-1"
+    >
+      <span className="size-1.5 animate-bounce rounded-full bg-slate-400" />
+      <span className="size-1.5 animate-bounce rounded-full bg-slate-400 [animation-delay:120ms]" />
+      <span className="size-1.5 animate-bounce rounded-full bg-slate-400 [animation-delay:240ms]" />
+    </output>
   );
 }

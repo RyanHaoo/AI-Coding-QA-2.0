@@ -138,17 +138,12 @@ export function AssistantInput({
           >
             <ImagePlus className="size-4" />
           </Button>
-          <textarea
-            className="max-h-36 min-h-10 min-w-0 flex-1 resize-none bg-transparent px-1 py-2 text-slate-950 text-sm outline-none placeholder:text-slate-400"
+          <input
+            className="h-10 min-w-0 flex-1 bg-transparent px-1 text-slate-950 text-sm outline-none placeholder:text-slate-400"
             disabled={busy}
             onChange={(event) => setText(event.currentTarget.value)}
-            onKeyDown={(event) => {
-              if (event.key === "Enter" && !event.shiftKey) {
-                event.preventDefault();
-                event.currentTarget.form?.requestSubmit();
-              }
-            }}
             placeholder="描述问题、查询工单或确认创建..."
+            type="text"
             value={text}
           />
           <Button
