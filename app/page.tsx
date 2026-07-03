@@ -18,7 +18,8 @@ import {
   normalizeView,
 } from "@/lib/identity/navigation";
 import {
-  getAdminTickets,
+  getAdminDashboardMetrics,
+  getAdminTicketCollection,
   getMemberTickets,
   getReassignCandidates,
   getTicketDetail,
@@ -30,6 +31,11 @@ type HomeProps = {
     ticketId?: string | string[];
     ticketSort?: string | string[];
     ticketStatus?: string | string[];
+    adminStatus?: string | string[];
+    adminSeverity?: string | string[];
+    adminSpecialty?: string | string[];
+    adminKeyword?: string | string[];
+    adminTicketNumber?: string | string[];
     view?: string | string[];
   }>;
 };
@@ -66,7 +72,7 @@ export default async function Home({ searchParams }: HomeProps) {
   const allowed = isViewAllowed(currentIdentity.role, activeView);
   const ticketQuery = parseTicketQueryParams(params);
 
-  const [memberTickets, adminTickets, ticketDetail] = allowed
+  const [memberTickets, adminTickets, adminDashboard, ticketDetail] = allowed
     ? await Promise.all([
         activeView === "tickets"
           ? getMemberTickets(
@@ -76,11 +82,16 @@ export default async function Home({ searchParams }: HomeProps) {
             )
           : Promise.resolve(undefined),
         activeView === "admin-tickets"
-          ? getAdminTickets(currentIdentity)
+          ? getAdminTicketCollection(currentIdentity, ticketQuery.adminFilters)
           : Promise.resolve(undefined),
-        ticketQuery.ticketId ? getTicketDetail(ticketQuery.ticketId) : null,
+        activeView === "dashboard"
+          ? getAdminDashboardMetrics(currentIdentity)
+          : Promise.resolve(undefined),
+        ticketQuery.ticketId
+          ? getTicketDetail(ticketQuery.ticketId, currentIdentity)
+          : null,
       ])
-    : [undefined, undefined, null];
+    : [undefined, undefined, undefined, null];
   const reassignCandidates =
     ticketDetail?.kind === "found"
       ? await getReassignCandidates(
@@ -98,6 +109,7 @@ export default async function Home({ searchParams }: HomeProps) {
       {allowed ? (
         <PageContent
           adminTickets={adminTickets}
+          adminDashboard={adminDashboard}
           currentIdentity={currentIdentity}
           memberTickets={memberTickets}
           reassignCandidates={reassignCandidates}

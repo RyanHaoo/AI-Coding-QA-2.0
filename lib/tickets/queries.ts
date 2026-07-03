@@ -8,6 +8,9 @@ import { createClient } from "@/lib/supabase/server";
 import type {
   TicketActivity,
   TicketActivityType,
+  AdminDashboardMetrics,
+  AdminTicketCollection,
+  AdminTicketFilters,
   TicketAssigneeCandidate,
   TicketDetailData,
   TicketDetailResult,
@@ -236,6 +239,7 @@ function mapTicketSummary(row: TicketRow): TicketSummary | null {
     assignee,
     createdAt: row.created_at,
     creator,
+    description: row.description ?? null,
     id: row.id,
     imageUrls: row.image_urls ?? [],
     locationDetail: row.location_detail,
@@ -360,6 +364,116 @@ export async function getAdminTickets(currentIdentity: ProjectMembership) {
   };
 }
 
+function textIncludes(value: string | null | undefined, keyword: string) {
+  return value?.toLowerCase().includes(keyword.toLowerCase()) ?? false;
+}
+
+export function applyAdminTicketFilters(
+  tickets: TicketSummary[],
+  filters: AdminTicketFilters,
+) {
+  const ticketNumber = filters.ticketNumber.trim().toLowerCase();
+  const keyword = filters.keyword.trim().toLowerCase();
+
+  return tickets.filter((ticket) => {
+    if (filters.status !== "all" && ticket.status !== filters.status) {
+      return false;
+    }
+
+    if (filters.severity !== "all" && ticket.severity !== filters.severity) {
+      return false;
+    }
+
+    if (filters.specialty !== "all" && ticket.specialty !== filters.specialty) {
+      return false;
+    }
+
+    if (ticketNumber) {
+      return ticket.ticketNumber.toLowerCase().includes(ticketNumber);
+    }
+
+    if (keyword) {
+      return (
+        textIncludes(ticket.summary, keyword) ||
+        textIncludes(ticket.locationDetail, keyword) ||
+        textIncludes(ticket.description, keyword)
+      );
+    }
+
+    return true;
+  });
+}
+
+export function deriveAdminDashboardMetrics(
+  tickets: TicketSummary[],
+): AdminDashboardMetrics {
+  const statusCounts = {
+    completed: 0,
+    pending: 0,
+    rejected: 0,
+  };
+  const severityCounts = {
+    minor: 0,
+    normal: 0,
+    serious: 0,
+    urgent: 0,
+  };
+
+  for (const ticket of tickets) {
+    statusCounts[ticket.status] += 1;
+    severityCounts[ticket.severity] += 1;
+  }
+
+  return {
+    completedTickets: statusCounts.completed,
+    focusTickets: tickets
+      .filter(
+        (ticket) => ticket.severity === "urgent" || ticket.status === "pending",
+      )
+      .slice(0, 5),
+    pendingTickets: statusCounts.pending,
+    rejectedTickets: statusCounts.rejected,
+    severityCounts,
+    statusCounts,
+    totalTickets: tickets.length,
+    urgentTickets: severityCounts.urgent,
+  };
+}
+
+export async function getAdminTicketCollection(
+  currentIdentity: ProjectMembership,
+  filters: AdminTicketFilters,
+): Promise<AdminTicketCollection> {
+  const collection = await getAdminTickets(currentIdentity);
+
+  if (collection.error) {
+    return {
+      error: collection.error,
+      filters,
+      tickets: [],
+      totalBeforeFilter: 0,
+    };
+  }
+
+  return {
+    error: null,
+    filters,
+    tickets: applyAdminTicketFilters(collection.tickets, filters),
+    totalBeforeFilter: collection.tickets.length,
+  };
+}
+
+export async function getAdminDashboardMetrics(
+  currentIdentity: ProjectMembership,
+) {
+  const collection = await getAdminTickets(currentIdentity);
+
+  return {
+    error: collection.error,
+    metrics: deriveAdminDashboardMetrics(collection.tickets),
+  };
+}
+
 async function ticketExists(ticketId: string) {
   const supabase = createAdminClient();
   const { data, error } = await supabase
@@ -377,6 +491,7 @@ async function ticketExists(ticketId: string) {
 
 export async function getTicketDetail(
   ticketId: string,
+  currentIdentity?: ProjectMembership,
 ): Promise<TicketDetailResult> {
   if (
     !/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
@@ -406,6 +521,10 @@ export async function getTicketDetail(
   const summary = mapTicketSummary(data as unknown as TicketRow);
   if (!summary) {
     return { kind: "not-found" };
+  }
+
+  if (currentIdentity && summary.project.id !== currentIdentity.project.id) {
+    return { kind: "forbidden" };
   }
 
   const activities = (

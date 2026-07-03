@@ -6,6 +6,7 @@ import {
 } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
+import { AdminDashboard } from "@/components/tickets/admin-dashboard";
 import { AdminTicketTable } from "@/components/tickets/admin-ticket-table";
 import { TicketDetail } from "@/components/tickets/ticket-detail";
 import { TicketDetailState } from "@/components/tickets/ticket-detail-state";
@@ -13,13 +14,19 @@ import { TicketList } from "@/components/tickets/ticket-list";
 import type { AppView, ProjectMembership } from "@/lib/identity/types";
 import type { TicketQueryParams } from "@/lib/tickets/query-params";
 import type {
+  AdminDashboardMetrics,
+  AdminTicketCollection,
   TicketAssigneeCandidate,
   TicketDetailResult,
   TicketSummary,
 } from "@/lib/tickets/types";
 
 type PageContentProps = {
-  adminTickets?: TicketCollection;
+  adminDashboard?: {
+    error: string | null;
+    metrics: AdminDashboardMetrics;
+  };
+  adminTickets?: AdminTicketCollection;
   currentIdentity: ProjectMembership;
   memberTickets?: TicketCollection;
   reassignCandidates: TicketAssigneeCandidate[];
@@ -35,7 +42,7 @@ type TicketCollection = {
 
 const contentByView = {
   "admin-tickets": {
-    description: "查看当前项目全部工单和只读详情。",
+    description: "查看当前项目全部工单、筛选并打开详情。",
     icon: SearchCheck,
     label: "管理员工单中心",
     title: "工单中心",
@@ -47,7 +54,7 @@ const contentByView = {
     title: "智能助手",
   },
   dashboard: {
-    description: "项目态势指标和紧急工单概览将在阶段 5 接入。",
+    description: "查看当前项目态势指标和紧急工单概览。",
     icon: LayoutDashboard,
     label: "管理员视图",
     title: "数据大盘",
@@ -61,6 +68,7 @@ const contentByView = {
 } as const;
 
 export function PageContent({
+  adminDashboard,
   adminTickets,
   currentIdentity,
   memberTickets,
@@ -91,6 +99,7 @@ export function PageContent({
 
       {ticketDetail?.kind === "found" ? (
         <TicketDetail
+          adminFilters={ticketQuery.adminFilters}
           baseView={ticketBaseView}
           currentIdentity={currentIdentity}
           reassignCandidates={reassignCandidates}
@@ -100,7 +109,11 @@ export function PageContent({
         />
       ) : ticketDetail?.kind === "forbidden" ||
         ticketDetail?.kind === "not-found" ? (
-        <TicketDetailState baseView={ticketBaseView} kind={ticketDetail.kind} />
+        <TicketDetailState
+          adminFilters={ticketQuery.adminFilters}
+          baseView={ticketBaseView}
+          kind={ticketDetail.kind}
+        />
       ) : view === "tickets" ? (
         <TicketList
           error={memberTickets?.error ?? null}
@@ -110,8 +123,20 @@ export function PageContent({
         />
       ) : view === "admin-tickets" ? (
         <AdminTicketTable
-          error={adminTickets?.error ?? null}
-          tickets={adminTickets?.tickets ?? []}
+          collection={
+            adminTickets ?? {
+              error: null,
+              filters: ticketQuery.adminFilters,
+              tickets: [],
+              totalBeforeFilter: 0,
+            }
+          }
+        />
+      ) : view === "dashboard" && adminDashboard ? (
+        <AdminDashboard
+          currentIdentity={currentIdentity}
+          error={adminDashboard.error}
+          metrics={adminDashboard.metrics}
         />
       ) : (
         <section className="grid min-h-[360px] place-items-center border border-slate-100 bg-white p-8">

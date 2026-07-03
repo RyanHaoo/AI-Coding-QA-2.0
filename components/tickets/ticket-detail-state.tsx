@@ -3,10 +3,12 @@ import { CircleAlert, SearchX } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { buildTicketHref } from "@/lib/tickets/query-params";
+import type { AdminTicketFilters } from "@/lib/tickets/types";
 
 export type TicketDetailStateKind = "forbidden" | "not-found";
 
 type TicketDetailStateProps = {
+  adminFilters?: AdminTicketFilters;
   baseView: "tickets" | "admin-tickets";
   kind: TicketDetailStateKind;
 };
@@ -24,7 +26,11 @@ const copyByKind = {
   },
 } as const;
 
-export function TicketDetailState({ baseView, kind }: TicketDetailStateProps) {
+export function TicketDetailState({
+  adminFilters,
+  baseView,
+  kind,
+}: TicketDetailStateProps) {
   const copy = copyByKind[kind];
   const Icon = copy.icon;
 
@@ -39,7 +45,9 @@ export function TicketDetailState({ baseView, kind }: TicketDetailStateProps) {
           {copy.description}
         </p>
         <Button asChild className="mt-5">
-          <Link href={buildTicketHref(baseView)}>返回列表</Link>
+          <Link href={buildTicketHref(baseView, { adminFilters })}>
+            返回列表
+          </Link>
         </Button>
       </div>
     </div>

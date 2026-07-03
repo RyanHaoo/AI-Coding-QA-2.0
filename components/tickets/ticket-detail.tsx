@@ -15,14 +15,16 @@ import {
 } from "@/lib/tickets/formatters";
 import { buildTicketHref } from "@/lib/tickets/query-params";
 import type {
-  TicketDetailData,
+  AdminTicketFilters,
   TicketAssigneeCandidate,
+  TicketDetailData,
   TicketSort,
   TicketStatusFilter,
 } from "@/lib/tickets/types";
 import { cn } from "@/lib/utils";
 
 type TicketDetailProps = {
+  adminFilters?: AdminTicketFilters;
   baseView: "tickets" | "admin-tickets";
   currentIdentity: ProjectMembership;
   reassignCandidates: TicketAssigneeCandidate[];
@@ -32,6 +34,7 @@ type TicketDetailProps = {
 };
 
 export function TicketDetail({
+  adminFilters,
   baseView,
   currentIdentity,
   reassignCandidates,
@@ -46,6 +49,7 @@ export function TicketDetail({
           <Button asChild size="sm" variant="ghost">
             <Link
               href={buildTicketHref(baseView, {
+                adminFilters,
                 ticketSort: sort,
                 ticketStatus: status,
               })}

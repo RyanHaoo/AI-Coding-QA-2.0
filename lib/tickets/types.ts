@@ -22,6 +22,38 @@ export type TicketStatusFilter = "pending" | "closed" | "all";
 
 export type TicketSort = "newest" | "oldest";
 
+export type AdminTicketStatusFilter = TicketStatus | "all";
+
+export type AdminTicketSeverityFilter = TicketSeverity | "all";
+
+export type AdminTicketSpecialtyFilter = TicketSpecialty | "all";
+
+export type AdminTicketFilters = {
+  keyword: string;
+  severity: AdminTicketSeverityFilter;
+  specialty: AdminTicketSpecialtyFilter;
+  status: AdminTicketStatusFilter;
+  ticketNumber: string;
+};
+
+export type AdminTicketCollection = {
+  error: string | null;
+  filters: AdminTicketFilters;
+  tickets: TicketSummary[];
+  totalBeforeFilter: number;
+};
+
+export type AdminDashboardMetrics = {
+  completedTickets: number;
+  focusTickets: TicketSummary[];
+  pendingTickets: number;
+  rejectedTickets: number;
+  severityCounts: Record<TicketSeverity, number>;
+  statusCounts: Record<TicketStatus, number>;
+  totalTickets: number;
+  urgentTickets: number;
+};
+
 export type TicketOperationState = {
   message: string;
   ok: boolean;
@@ -45,6 +77,7 @@ export type TicketSummary = {
   assignee: TicketPerson;
   createdAt: string;
   creator: TicketPerson;
+  description: string | null;
   id: string;
   imageUrls: string[];
   locationDetail: string;
@@ -148,6 +181,37 @@ export const ticketStatusFilterLabels: Record<TicketStatusFilter, string> = {
   all: "全部",
   closed: "已结束",
   pending: "待处理",
+};
+
+export const adminTicketStatusFilterLabels: Record<
+  AdminTicketStatusFilter,
+  string
+> = {
+  all: "全部状态",
+  completed: "已完成",
+  pending: "待处理",
+  rejected: "已拒绝",
+};
+
+export const adminTicketSeverityFilterLabels: Record<
+  AdminTicketSeverityFilter,
+  string
+> = {
+  all: "全部严重程度",
+  minor: "轻微",
+  normal: "一般",
+  serious: "严重",
+  urgent: "紧急",
+};
+
+export const adminTicketSpecialtyFilterLabels: Record<
+  AdminTicketSpecialtyFilter,
+  string
+> = {
+  all: "全部专业",
+  architecture: "建筑设计专业",
+  plumbing: "给排水专业",
+  structure: "结构专业",
 };
 
 export const ticketSortLabels: Record<TicketSort, string> = {

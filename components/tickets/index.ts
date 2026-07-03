@@ -1,3 +1,5 @@
+export { AdminDashboard } from "@/components/tickets/admin-dashboard";
+export { AdminTicketFilters } from "@/components/tickets/admin-ticket-filters";
 export { AdminTicketTable } from "@/components/tickets/admin-ticket-table";
 export { TicketActivityList } from "@/components/tickets/ticket-activity-list";
 export { TicketDetail } from "@/components/tickets/ticket-detail";
