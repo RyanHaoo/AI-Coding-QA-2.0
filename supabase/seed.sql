@@ -1,5 +1,6 @@
--- Stage 1 seed data is created by scripts/seed-stage1.mjs because Supabase
--- Auth users must be created through the Auth Admin API with a service key.
+-- Stage seed data is created by Node scripts because Supabase Auth users and
+-- project memberships must be resolved through the service key.
 --
 -- Run:
 --   npm run seed:stage1
+--   npm run seed:stage2

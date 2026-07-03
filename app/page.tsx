@@ -17,9 +17,18 @@ import {
   isViewAllowed,
   normalizeView,
 } from "@/lib/identity/navigation";
+import {
+  getAdminTickets,
+  getMemberTickets,
+  getTicketDetail,
+} from "@/lib/tickets/queries";
+import { parseTicketQueryParams } from "@/lib/tickets/query-params";
 
 type HomeProps = {
   searchParams?: Promise<{
+    ticketId?: string | string[];
+    ticketSort?: string | string[];
+    ticketStatus?: string | string[];
     view?: string | string[];
   }>;
 };
@@ -54,6 +63,23 @@ export default async function Home({ searchParams }: HomeProps) {
   const activeView = normalizeView(params?.view);
   const navigation = getNavigationForRole(currentIdentity.role);
   const allowed = isViewAllowed(currentIdentity.role, activeView);
+  const ticketQuery = parseTicketQueryParams(params);
+
+  const [memberTickets, adminTickets, ticketDetail] = allowed
+    ? await Promise.all([
+        activeView === "tickets"
+          ? getMemberTickets(
+              currentIdentity,
+              ticketQuery.ticketStatus,
+              ticketQuery.ticketSort,
+            )
+          : Promise.resolve(undefined),
+        activeView === "admin-tickets"
+          ? getAdminTickets(currentIdentity)
+          : Promise.resolve(undefined),
+        ticketQuery.ticketId ? getTicketDetail(ticketQuery.ticketId) : null,
+      ])
+    : [undefined, undefined, null];
 
   return (
     <AppShell
@@ -62,7 +88,14 @@ export default async function Home({ searchParams }: HomeProps) {
       navigation={navigation}
     >
       {allowed ? (
-        <PageContent currentIdentity={currentIdentity} view={activeView} />
+        <PageContent
+          adminTickets={adminTickets}
+          currentIdentity={currentIdentity}
+          memberTickets={memberTickets}
+          ticketDetail={ticketDetail}
+          ticketQuery={ticketQuery}
+          view={activeView}
+        />
       ) : (
         <NoPermission currentIdentity={currentIdentity} />
       )}

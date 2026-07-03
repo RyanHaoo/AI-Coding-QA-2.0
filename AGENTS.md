@@ -53,8 +53,6 @@
 
 - Supabase 项目：`qa-new`。
 - Project ref：`alfsrxwabllyldcbofok`。
-- Region：`ap-southeast-1`。
-- Org：`RyanHaoo's Org` (`dxpxhdtdmouyctgepjcq`)。
 - 本地真实环境变量放在 `.env.local`；可提交模板放在 `.env.example`。
 - `NEXT_PUBLIC_SUPABASE_URL` 和 `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` 可用于浏览器。
 - `SECRET_KEY` 只能手动填入，并且仅能在服务端使用。
@@ -62,6 +60,7 @@
 - 浏览器 client：`lib/supabase/client.ts`。
 - 服务端 client：`lib/supabase/server.ts`。
 - 会话刷新：`lib/supabase/proxy.ts` 与根 `proxy.ts`。
+- 当前环境没有 supabase CLI，请使用 supabase MCP 内的等效工具
 
 ## spec-kit
 

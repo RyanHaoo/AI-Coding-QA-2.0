@@ -6,16 +6,31 @@ import {
 } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
+import { AdminTicketTable } from "@/components/tickets/admin-ticket-table";
+import { TicketDetail } from "@/components/tickets/ticket-detail";
+import { TicketDetailState } from "@/components/tickets/ticket-detail-state";
+import { TicketList } from "@/components/tickets/ticket-list";
 import type { AppView, ProjectMembership } from "@/lib/identity/types";
+import type { TicketQueryParams } from "@/lib/tickets/query-params";
+import type { TicketDetailResult, TicketSummary } from "@/lib/tickets/types";
 
 type PageContentProps = {
+  adminTickets?: TicketCollection;
   currentIdentity: ProjectMembership;
+  memberTickets?: TicketCollection;
+  ticketDetail?: TicketDetailResult | null;
+  ticketQuery: TicketQueryParams;
   view: AppView;
+};
+
+type TicketCollection = {
+  error: string | null;
+  tickets: TicketSummary[];
 };
 
 const contentByView = {
   "admin-tickets": {
-    description: "当前项目全部工单将在阶段 5 接入。",
+    description: "查看当前项目全部工单和只读详情。",
     icon: SearchCheck,
     label: "管理员工单中心",
     title: "工单中心",
@@ -33,16 +48,24 @@ const contentByView = {
     title: "数据大盘",
   },
   tickets: {
-    description: "当前身份相关工单列表将在阶段 2 接入。",
+    description: "查看当前身份相关工单和只读详情。",
     icon: ClipboardList,
     label: "工单视图",
     title: "工单列表",
   },
 } as const;
 
-export function PageContent({ currentIdentity, view }: PageContentProps) {
+export function PageContent({
+  adminTickets,
+  currentIdentity,
+  memberTickets,
+  ticketDetail,
+  ticketQuery,
+  view,
+}: PageContentProps) {
   const content = contentByView[view];
   const Icon = content.icon;
+  const ticketBaseView = view === "admin-tickets" ? "admin-tickets" : "tickets";
 
   return (
     <div className="mx-auto flex w-full max-w-5xl flex-col gap-6">
@@ -60,19 +83,43 @@ export function PageContent({ currentIdentity, view }: PageContentProps) {
         </h1>
       </header>
 
-      <section className="grid min-h-[360px] place-items-center border border-slate-100 bg-white p-8">
-        <div className="max-w-md text-center">
-          <div className="mx-auto mb-5 flex size-12 items-center justify-center bg-[#eff6ff] text-[#005ac2]">
-            <Icon className="size-6" />
+      {ticketDetail?.kind === "found" ? (
+        <TicketDetail
+          baseView={ticketBaseView}
+          sort={ticketQuery.ticketSort}
+          status={ticketQuery.ticketStatus}
+          ticket={ticketDetail.ticket}
+        />
+      ) : ticketDetail?.kind === "forbidden" ||
+        ticketDetail?.kind === "not-found" ? (
+        <TicketDetailState baseView={ticketBaseView} kind={ticketDetail.kind} />
+      ) : view === "tickets" ? (
+        <TicketList
+          error={memberTickets?.error ?? null}
+          sort={ticketQuery.ticketSort}
+          status={ticketQuery.ticketStatus}
+          tickets={memberTickets?.tickets ?? []}
+        />
+      ) : view === "admin-tickets" ? (
+        <AdminTicketTable
+          error={adminTickets?.error ?? null}
+          tickets={adminTickets?.tickets ?? []}
+        />
+      ) : (
+        <section className="grid min-h-[360px] place-items-center border border-slate-100 bg-white p-8">
+          <div className="max-w-md text-center">
+            <div className="mx-auto mb-5 flex size-12 items-center justify-center bg-[#eff6ff] text-[#005ac2]">
+              <Icon className="size-6" />
+            </div>
+            <h2 className="font-medium text-lg text-slate-900">
+              {content.title}
+            </h2>
+            <p className="mt-2 text-slate-500 text-sm leading-6">
+              {content.description}
+            </p>
           </div>
-          <h2 className="font-medium text-lg text-slate-900">
-            {content.title}
-          </h2>
-          <p className="mt-2 text-slate-500 text-sm leading-6">
-            {content.description}
-          </p>
-        </div>
-      </section>
+        </section>
+      )}
     </div>
   );
 }
