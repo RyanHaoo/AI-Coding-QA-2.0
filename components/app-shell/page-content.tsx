@@ -4,7 +4,9 @@ import {
   LayoutDashboard,
   SearchCheck,
 } from "lucide-react";
+import type { UIMessage } from "ai";
 
+import { AssistantPage } from "@/components/assistant/assistant-page";
 import { Badge } from "@/components/ui/badge";
 import { AdminDashboard } from "@/components/tickets/admin-dashboard";
 import { AdminTicketTable } from "@/components/tickets/admin-ticket-table";
@@ -27,6 +29,9 @@ type PageContentProps = {
     metrics: AdminDashboardMetrics;
   };
   adminTickets?: AdminTicketCollection;
+  assistantBuilders: AssistantBuilderCandidate[];
+  assistantMessages: UIMessage[];
+  assistantSessionId: string | null;
   currentIdentity: ProjectMembership;
   memberTickets?: TicketCollection;
   reassignCandidates: TicketAssigneeCandidate[];
@@ -40,6 +45,12 @@ type TicketCollection = {
   tickets: TicketSummary[];
 };
 
+type AssistantBuilderCandidate = {
+  department: string;
+  fullName: string;
+  membershipId: string;
+};
+
 const contentByView = {
   "admin-tickets": {
     description: "查看当前项目全部工单、筛选并打开详情。",
@@ -48,7 +59,7 @@ const contentByView = {
     title: "工单中心",
   },
   assistant: {
-    description: "对话、查单和建单入口将在阶段 4 接入。",
+    description: "对话查单、整理建单草稿并创建当前项目待处理工单。",
     icon: BotMessageSquare,
     label: "默认入口",
     title: "智能助手",
@@ -70,6 +81,9 @@ const contentByView = {
 export function PageContent({
   adminDashboard,
   adminTickets,
+  assistantBuilders,
+  assistantMessages,
+  assistantSessionId,
   currentIdentity,
   memberTickets,
   reassignCandidates,
@@ -82,7 +96,7 @@ export function PageContent({
   const ticketBaseView = view === "admin-tickets" ? "admin-tickets" : "tickets";
 
   return (
-    <div className="mx-auto flex w-full max-w-5xl flex-col gap-6">
+    <div className="mx-auto flex w-full min-w-0 max-w-5xl flex-col gap-6 overflow-x-hidden">
       <header className="flex flex-col gap-3 border-slate-200 border-b pb-6">
         <div className="flex items-center gap-2">
           <Badge variant="secondary" className="rounded-md">
@@ -97,7 +111,13 @@ export function PageContent({
         </h1>
       </header>
 
-      {ticketDetail?.kind === "found" ? (
+      {view === "assistant" && assistantSessionId ? (
+        <AssistantPage
+          builders={assistantBuilders}
+          initialMessages={assistantMessages}
+          sessionId={assistantSessionId}
+        />
+      ) : ticketDetail?.kind === "found" ? (
         <TicketDetail
           adminFilters={ticketQuery.adminFilters}
           baseView={ticketBaseView}

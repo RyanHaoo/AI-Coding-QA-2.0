@@ -17,6 +17,8 @@ import {
   isViewAllowed,
   normalizeView,
 } from "@/lib/identity/navigation";
+import { getOrCreateAssistantSession } from "@/lib/assistant/session";
+import { listProjectBuilders } from "@/lib/tickets/assistant-queries";
 import {
   getAdminDashboardMetrics,
   getAdminTicketCollection,
@@ -72,7 +74,14 @@ export default async function Home({ searchParams }: HomeProps) {
   const allowed = isViewAllowed(currentIdentity.role, activeView);
   const ticketQuery = parseTicketQueryParams(params);
 
-  const [memberTickets, adminTickets, adminDashboard, ticketDetail] = allowed
+  const [
+    memberTickets,
+    adminTickets,
+    adminDashboard,
+    ticketDetail,
+    assistantSession,
+    assistantBuilders,
+  ] = allowed
     ? await Promise.all([
         activeView === "tickets"
           ? getMemberTickets(
@@ -90,8 +99,17 @@ export default async function Home({ searchParams }: HomeProps) {
         ticketQuery.ticketId
           ? getTicketDetail(ticketQuery.ticketId, currentIdentity)
           : null,
+        activeView === "assistant"
+          ? getOrCreateAssistantSession({
+              currentIdentity,
+              userId: user.id,
+            })
+          : Promise.resolve(null),
+        activeView === "assistant"
+          ? listProjectBuilders(currentIdentity)
+          : Promise.resolve([]),
       ])
-    : [undefined, undefined, undefined, null];
+    : [undefined, undefined, undefined, null, null, []];
   const reassignCandidates =
     ticketDetail?.kind === "found"
       ? await getReassignCandidates(
@@ -110,6 +128,9 @@ export default async function Home({ searchParams }: HomeProps) {
         <PageContent
           adminTickets={adminTickets}
           adminDashboard={adminDashboard}
+          assistantBuilders={assistantBuilders}
+          assistantMessages={assistantSession?.messages ?? []}
+          assistantSessionId={assistantSession?.id ?? null}
           currentIdentity={currentIdentity}
           memberTickets={memberTickets}
           reassignCandidates={reassignCandidates}
