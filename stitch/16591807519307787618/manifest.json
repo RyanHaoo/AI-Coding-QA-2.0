@@ -1,0 +1,27 @@
+[
+  {
+    "slug": "assistant",
+    "label": "智能助手",
+    "screen": "3a8dc63325e54d1982a8093215517df5"
+  },
+  {
+    "slug": "ticket-detail-edit",
+    "label": "工单详情 - 编辑模式",
+    "screen": "8e588488837648a29c559b6b37cea8b1"
+  },
+  {
+    "slug": "ticket-detail-view",
+    "label": "工单详情组件-展示模式",
+    "screen": "66b4d022d24e44c5bb1e1373d1fa67bd"
+  },
+  {
+    "slug": "admin-ticket-center",
+    "label": "导航区和管理员工单中心",
+    "screen": "dfb9f1684b7f45be8559ae1c7cd653e5"
+  },
+  {
+    "slug": "login",
+    "label": "登录页",
+    "screen": "04485e32e5254cc9a549c78e188fc98d"
+  }
+]

@@ -34,6 +34,18 @@
 - Supabase env：实际本地值放在 `.env.local`；可提交模板放在 `.env.example`。`NEXT_PUBLIC_SUPABASE_URL` 和 `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` 可用于浏览器，`SECRET_KEY` 只能手动填入并仅在服务端使用。
 - Supabase client：环境读取位于 `lib/supabase/env.ts`，浏览器 client 位于 `lib/supabase/client.ts`，服务端 client 位于 `lib/supabase/server.ts`，会话刷新 proxy 位于 `lib/supabase/proxy.ts` 和根 `proxy.ts`。
 - 本次 Supabase 初始化查询了 Supabase changelog、Supabase MCP `searchDocs` 的 Next.js SSR client 文档，以及本地 Next.js 16 `proxy` 文档；未使用 context7 library id。
+- 已安装项目 skill：`simple-next-langchain-agent` 来自 `https://github.com/RyanHaoo/simple-next-langchain-agent-skill`；`langchain-ai/langchain-skills` 已通过 `npx skills add langchain-ai/langchain-skills --skill '*'` 安装到 `.agents/skills`。
+- Google Stitch MCP 配置如下：
+
+```toml
+[mcp_servers.stitch]
+url = "https://stitch.googleapis.com/mcp"
+
+[mcp_servers.stitch.http_headers]
+"X-Goog-Api-Key" = ""
+```
+
+- Stitch 项目 `智能质检工单`（ID: `16591807519307787618`）的指定屏幕截图和 HTML 已下载到 `stitch/16591807519307787618/`，屏幕清单见 `manifest.json`。
 
 <!-- BEGIN:nextjs-agent-rules -->
 # 注意当前 Next.js 版本

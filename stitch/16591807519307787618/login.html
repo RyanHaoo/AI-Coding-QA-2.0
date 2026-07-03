@@ -1,0 +1,164 @@
+<!DOCTYPE html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>登录 - 建筑施工质检情报员</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&amp;family=Noto+Sans+SC:wght@400;500;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-high": "#e1e9ee",
+                        "primary-fixed": "#d8e2ff",
+                        "on-background": "#2a3439",
+                        "background": "#f7f9fb",
+                        "on-secondary-fixed": "#3e3f45",
+                        "on-primary-fixed-variant": "#0057bd",
+                        "secondary-container": "#e2e2e9",
+                        "outline": "#717c82",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-dim": "#cfdce3",
+                        "secondary": "#5e5f65",
+                        "inverse-on-surface": "#9a9d9f",
+                        "secondary-fixed": "#e2e2e9",
+                        "surface-tint": "#005ac2",
+                        "primary-container": "#d8e2ff",
+                        "error": "#9f403d",
+                        "surface-bright": "#f7f9fb",
+                        "inverse-surface": "#0b0f10",
+                        "on-tertiary-fixed": "#34314b",
+                        "tertiary": "#5f5c78",
+                        "inverse-primary": "#4d8eff",
+                        "surface-container-low": "#f0f4f7",
+                        "surface-container": "#e8eff3",
+                        "tertiary-fixed-dim": "#c5c0e0",
+                        "secondary-fixed-dim": "#d4d4db",
+                        "on-tertiary": "#fcf7ff",
+                        "tertiary-container": "#d3ceef",
+                        "on-error-container": "#752121",
+                        "surface": "#f7f9fb",
+                        "tertiary-fixed": "#d3ceef",
+                        "secondary-dim": "#515359",
+                        "on-tertiary-container": "#47445f",
+                        "surface-container-highest": "#d9e4ea",
+                        "surface-variant": "#d9e4ea",
+                        "error-container": "#fe8983",
+                        "on-surface-variant": "#566166",
+                        "on-tertiary-fixed-variant": "#504e69",
+                        "primary-dim": "#004fab",
+                        "on-surface": "#2a3439",
+                        "primary-fixed-dim": "#c3d4ff",
+                        "on-error": "#fff7f6",
+                        "on-primary-container": "#004eaa",
+                        "on-secondary-fixed-variant": "#5a5b61",
+                        "on-secondary": "#f9f8ff",
+                        "tertiary-dim": "#53506b",
+                        "outline-variant": "#a9b4b9",
+                        "primary": "#005ac2",
+                        "on-primary": "#f7f7ff",
+                        "on-secondary-container": "#505157",
+                        "error-dim": "#4e0309",
+                        "on-primary-fixed": "#003c86"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "fontFamily": {
+                        "headline": ["Inter", "Noto Sans SC"],
+                        "body": ["Inter", "Noto Sans SC"],
+                        "label": ["Inter", "Noto Sans SC"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            background-color: #f7f9fb;
+            font-family: 'Inter', 'Noto Sans SC', sans-serif;
+            color: #2a3439;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col selection:bg-primary-container selection:text-on-primary-container">
+<!-- Subtle Background Texture -->
+<div class="fixed inset-0 pointer-events-none opacity-[0.03] z-0" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCxkdNv22zlKhiyk-kCDOlPd-YmZ8jPnahR5M888OgBnGV_JvN3Z6EbfL0VIrk-7W4-ybu5CQb_y2qYVTuhMMCRh5Adx4P7mloLUAiG06NKLJnF9lDNCoR5LtY2oqPdSfOrrT50SjePbZqGsIEuISmAxmLDHchPve6yuGrHeWdhh4GPxUEC1WnsJxxYZdaMb9IYdO7h9s4C99-2HID-C_wdm-YkG0--FZ77fVSA65dqlgiaWz3apsC678pg7qXn0JtDAGiQLj3vWf1m');">
+</div>
+<main class="flex-grow flex items-center justify-center p-6 relative z-10">
+<div class="w-full max-w-[420px]">
+<!-- Brand Identity Section -->
+<div class="mb-12 text-center">
+<div class="inline-flex items-center justify-center w-12 h-12 bg-primary text-on-primary mb-6">
+<span class="material-symbols-outlined text-2xl" data-icon="architecture">architecture</span>
+</div>
+<h1 class="text-lg font-bold tracking-tighter text-on-surface uppercase mb-1">
+                    建筑施工质检情报员
+                </h1>
+<p class="text-xs font-medium tracking-widest text-outline uppercase opacity-60">
+                    CONSTRUCTION INTELLIGENCE
+                </p>
+</div>
+<!-- Login Card -->
+<div class="bg-surface-container-lowest p-8 md:p-10 border border-transparent shadow-[0_10px_30px_rgba(42,52,57,0.04)]">
+<div class="mb-8">
+<h2 class="text-2xl font-bold text-on-surface tracking-tight mb-2">登录</h2>
+<div class="h-1 w-8 bg-primary"></div>
+</div>
+<form class="space-y-6">
+<!-- Employee ID Field -->
+<div class="space-y-2">
+<label class="block text-[11px] font-bold uppercase tracking-wider text-on-surface-variant" for="employee-id">
+                            工号
+                        </label>
+<div class="relative group">
+<div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-outline group-focus-within:text-primary transition-colors">
+<span class="material-symbols-outlined text-[20px]" data-icon="badge">badge</span>
+</div>
+<input class="block w-full pl-10 pr-4 py-3 bg-surface-container-low border-b border-transparent focus:border-primary focus:bg-white focus:ring-0 text-sm transition-all placeholder:text-outline-variant outline-none" id="employee-id" name="employee-id" placeholder="输入您的员工编号" type="text">
+</div>
+</div>
+<!-- Password Field -->
+<div class="space-y-2">
+<label class="block text-[11px] font-bold uppercase tracking-wider text-on-surface-variant" for="password">
+                            密码
+                        </label>
+<div class="relative group">
+<div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-outline group-focus-within:text-primary transition-colors">
+<span class="material-symbols-outlined text-[20px]" data-icon="lock">lock</span>
+</div>
+<input class="block w-full pl-10 pr-4 py-3 bg-surface-container-low border-b border-transparent focus:border-primary focus:bg-white focus:ring-0 text-sm transition-all placeholder:text-outline-variant outline-none" id="password" name="password" placeholder="输入系统访问密码" type="password">
+</div>
+</div>
+<!-- Submit Button -->
+<div class="pt-4">
+<button class="w-full bg-primary text-on-primary py-4 px-6 text-sm font-bold tracking-widest uppercase flex items-center justify-center gap-2 hover:bg-primary-dim active:opacity-80 transition-all group" type="submit">
+<span class="">登录</span>
+<span class="material-symbols-outlined text-sm group-hover:translate-x-1 transition-transform" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+</form>
+<!-- Security Assurance -->
+
+</div>
+<!-- Footer Meta -->
+
+</div>
+</main>
+<!-- Side Decorative Element (Asymmetric Detail) -->
+
+
+
+
+
+</body></html>
