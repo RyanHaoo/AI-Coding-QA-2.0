@@ -1,10 +1,12 @@
 import { toBaseMessages, toUIMessageStream } from "@ai-sdk/langchain";
+import { Command } from "@langchain/langgraph";
 import {
   consumeStream,
   createUIMessageStream,
   createUIMessageStreamResponse,
   type UIMessage,
 } from "ai";
+import type { HITLResponse } from "langchain";
 
 import { createAssistantAgent } from "@/lib/assistant/agent";
 import { resolveAssistantIdentity } from "@/lib/assistant/runtime";
@@ -17,6 +19,7 @@ import { collectUploadedImageUrls } from "@/lib/assistant/uploads";
 type ChatRequestBody = {
   id?: string;
   messages?: UIMessage[];
+  resume?: HITLResponse;
   sessionId?: string;
 };
 
@@ -43,13 +46,17 @@ export async function POST(request: Request) {
   };
   const agent = createAssistantAgent(context);
   const baseMessages = await toBaseMessages(messages);
+  const threadId = `assistant:${session.id}`;
 
   const stream = createUIMessageStream({
     execute: async ({ writer }) => {
-      const langchainStream = await agent.stream(
-        { messages: baseMessages },
-        { streamMode: ["values", "messages", "tools"] },
-      );
+      const input = body.resume
+        ? new Command({ resume: body.resume })
+        : { messages: baseMessages };
+      const langchainStream = await agent.stream(input, {
+        configurable: { thread_id: threadId },
+        streamMode: ["values", "messages", "tools"],
+      });
       writer.merge(
         toUIMessageStream(langchainStream, {
           onError: (error) => {

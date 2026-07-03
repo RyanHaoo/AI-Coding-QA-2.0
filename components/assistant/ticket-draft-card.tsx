@@ -10,6 +10,7 @@ import {
   formatTicketSeverity,
   formatTicketSpecialty,
 } from "@/lib/tickets/formatters";
+import { cn } from "@/lib/utils";
 
 type BuilderCandidate = {
   department: string;
@@ -20,10 +21,12 @@ type BuilderCandidate = {
 export function TicketDraftCard({
   builders,
   draft,
+  readOnly = false,
   onConfirm,
 }: {
   builders: BuilderCandidate[];
   draft: TicketDraft;
+  readOnly?: boolean;
   onConfirm: (draft: TicketDraft) => void;
 }) {
   const [summary, setSummary] = useState(draft.summary);
@@ -32,7 +35,7 @@ export function TicketDraftCard({
   const [severity, setSeverity] = useState(draft.severity);
   const [specialty, setSpecialty] = useState(draft.specialty);
   const [assigneeMembershipId, setAssigneeMembershipId] = useState(
-    draft.assigneeMembershipId ?? builders[0]?.membershipId ?? "",
+    draft.assigneeMembershipId ?? "",
   );
   const [imageUrls, setImageUrls] = useState(draft.imageUrls);
 
@@ -60,20 +63,33 @@ export function TicketDraftCard({
     specialty,
     summary,
   };
+  const fieldClassName =
+    "rounded-md border border-slate-200 bg-slate-50 px-3 py-2 text-slate-900 outline-none focus:border-[#005ac2] disabled:cursor-not-allowed disabled:bg-slate-100 disabled:text-slate-500";
 
   return (
-    <div className="grid gap-4 rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
+    <div
+      className={cn(
+        "grid gap-4 rounded-lg border border-slate-200 bg-white p-4 shadow-sm",
+        readOnly && "bg-slate-50 opacity-70",
+      )}
+    >
       <div className="flex items-center justify-between gap-3">
         <div>
-          <h3 className="font-semibold text-slate-950">待确认工单草稿</h3>
+          <h3 className="font-semibold text-slate-950">
+            {readOnly ? "已确认工单草稿" : "待确认工单草稿"}
+          </h3>
           <p className="mt-1 text-slate-500 text-xs">
-            确认前可调整字段和保留图片。
+            {readOnly
+              ? "草稿已提交创建，字段不可再编辑。"
+              : "确认前可调整字段和保留图片。"}
           </p>
         </div>
-        <CheckCircle2 className="size-5 text-[#005ac2]" />
+        <CheckCircle2
+          className={cn("size-5 text-[#005ac2]", readOnly && "text-slate-400")}
+        />
       </div>
 
-      {missingFields.length > 0 ? (
+      {!readOnly && missingFields.length > 0 ? (
         <div className="rounded-md bg-amber-50 px-3 py-2 text-amber-800 text-sm">
           还缺少：{missingFields.join("、")}
         </div>
@@ -82,7 +98,8 @@ export function TicketDraftCard({
       <label className="grid gap-1 text-sm">
         <span className="font-medium text-slate-700">问题描述</span>
         <input
-          className="rounded-md border border-slate-200 bg-slate-50 px-3 py-2 text-slate-900 outline-none focus:border-[#005ac2]"
+          className={fieldClassName}
+          disabled={readOnly}
           onChange={(event) => setSummary(event.currentTarget.value)}
           value={summary}
         />
@@ -91,7 +108,8 @@ export function TicketDraftCard({
       <label className="grid gap-1 text-sm">
         <span className="font-medium text-slate-700">详细位置</span>
         <input
-          className="rounded-md border border-slate-200 bg-slate-50 px-3 py-2 text-slate-900 outline-none focus:border-[#005ac2]"
+          className={fieldClassName}
+          disabled={readOnly}
           onChange={(event) => setLocationDetail(event.currentTarget.value)}
           value={locationDetail}
         />
@@ -101,7 +119,8 @@ export function TicketDraftCard({
         <label className="grid gap-1 text-sm">
           <span className="font-medium text-slate-700">严重程度</span>
           <select
-            className="rounded-md border border-slate-200 bg-slate-50 px-3 py-2 text-slate-900 outline-none focus:border-[#005ac2]"
+            className={fieldClassName}
+            disabled={readOnly}
             onChange={(event) =>
               setSeverity(event.currentTarget.value as TicketDraft["severity"])
             }
@@ -120,7 +139,8 @@ export function TicketDraftCard({
         <label className="grid gap-1 text-sm">
           <span className="font-medium text-slate-700">专业类型</span>
           <select
-            className="rounded-md border border-slate-200 bg-slate-50 px-3 py-2 text-slate-900 outline-none focus:border-[#005ac2]"
+            className={fieldClassName}
+            disabled={readOnly}
             onChange={(event) =>
               setSpecialty(
                 event.currentTarget.value as TicketDraft["specialty"],
@@ -141,7 +161,8 @@ export function TicketDraftCard({
         <label className="grid gap-1 text-sm">
           <span className="font-medium text-slate-700">责任人</span>
           <select
-            className="rounded-md border border-slate-200 bg-slate-50 px-3 py-2 text-slate-900 outline-none focus:border-[#005ac2]"
+            className={fieldClassName}
+            disabled={readOnly}
             onChange={(event) =>
               setAssigneeMembershipId(event.currentTarget.value)
             }
@@ -161,7 +182,8 @@ export function TicketDraftCard({
       <label className="grid gap-1 text-sm">
         <span className="font-medium text-slate-700">问题详情</span>
         <textarea
-          className="min-h-24 rounded-md border border-slate-200 bg-slate-50 px-3 py-2 text-slate-900 outline-none focus:border-[#005ac2]"
+          className={cn("min-h-24", fieldClassName)}
+          disabled={readOnly}
           onChange={(event) => setDescription(event.currentTarget.value)}
           value={description}
         />
@@ -190,6 +212,7 @@ export function TicketDraftCard({
                 <button
                   aria-label="移除图片"
                   className="absolute top-1 right-1 grid size-7 place-items-center rounded-full bg-slate-950/70 text-white"
+                  disabled={readOnly}
                   onClick={() =>
                     setImageUrls((current) =>
                       current.filter((item) => item !== url),
@@ -211,11 +234,11 @@ export function TicketDraftCard({
 
       <Button
         className="w-full"
-        disabled={missingFields.length > 0}
+        disabled={readOnly || missingFields.length > 0}
         onClick={() => onConfirm(nextDraft)}
         type="button"
       >
-        确认创建工单
+        {readOnly ? "已确认并提交" : "确认创建工单"}
       </Button>
     </div>
   );

@@ -102,68 +102,181 @@ function MessagePart({
     );
   }
 
-  if (isToolUIPart(part) && part.state === "output-available") {
-    const output = part.output as {
-      detailHref?: string;
-      draft?: TicketDraft;
-      error?: string;
-      imageUrls?: string[];
-      kind?: string;
-      message?: string;
-      ticketNumber?: string;
-      tickets?: AssistantTicketResult[];
-    };
+  if (!isToolUIPart(part)) {
+    return null;
+  }
 
-    if (output.kind === "ticket_draft" && output.draft) {
+  if (getToolPartName(part) === "create_ticket_from_confirmed_draft") {
+    if (part.state === "approval-requested") {
       return (
         <TicketDraftCard
           builders={builders}
-          draft={output.draft}
+          draft={normalizeDraftInput(part.input)}
           onConfirm={onConfirmDraft}
         />
       );
     }
 
-    if (output.kind === "ticket_results") {
+    if (part.state === "approval-responded") {
       return (
-        <TicketResultList
-          message={output.message}
-          tickets={output.tickets ?? []}
+        <TicketDraftCard
+          builders={builders}
+          draft={normalizeDraftInput(part.input)}
+          onConfirm={onConfirmDraft}
+          readOnly
         />
       );
     }
 
-    if (output.kind === "ticket_created") {
+    if (part.state === "output-available") {
       return (
-        <div className="rounded-lg border border-emerald-200 bg-emerald-50 p-4 text-emerald-900 text-sm">
-          <p className="font-semibold">工单创建成功</p>
-          <p className="mt-1">工单编号：#{output.ticketNumber}</p>
-          {output.detailHref ? (
-            <Link
-              className="mt-2 inline-flex font-medium text-emerald-800 hover:underline"
-              href={output.detailHref}
-            >
-              查看详情
-            </Link>
-          ) : null}
-        </div>
+        <>
+          <TicketDraftCard
+            builders={builders}
+            draft={normalizeDraftInput(part.input)}
+            onConfirm={onConfirmDraft}
+            readOnly
+          />
+          <ToolOutput output={part.output} />
+        </>
       );
     }
 
-    if (output.error) {
+    if (part.state === "output-error") {
       return (
-        <div className="rounded-lg border border-red-200 bg-red-50 p-3 text-red-700 text-sm">
-          {output.error}
-        </div>
+        <>
+          <TicketDraftCard
+            builders={builders}
+            draft={normalizeDraftInput(part.input)}
+            onConfirm={onConfirmDraft}
+            readOnly
+          />
+          <div className="rounded-lg border border-red-200 bg-red-50 p-3 text-red-700 text-sm">
+            {part.errorText}
+          </div>
+        </>
       );
     }
-  }
 
-  if (isToolUIPart(part) && part.state !== "output-available") {
     return null;
   }
 
+  if (part.state === "output-available") {
+    return <ToolOutput output={part.output} />;
+  }
+
   return null;
+}
+
+function ToolOutput({ output }: { output: unknown }) {
+  const result = output as {
+    detailHref?: string;
+    error?: string;
+    kind?: string;
+    message?: string;
+    ticketNumber?: string;
+    tickets?: AssistantTicketResult[];
+  };
+
+  if (result.kind === "ticket_results") {
+    return (
+      <TicketResultList
+        message={result.message}
+        tickets={result.tickets ?? []}
+      />
+    );
+  }
+
+  if (result.kind === "ticket_created") {
+    return (
+      <div className="rounded-lg border border-emerald-200 bg-emerald-50 p-4 text-emerald-900 text-sm">
+        <p className="font-semibold">工单创建成功</p>
+        <p className="mt-1">工单编号：#{result.ticketNumber}</p>
+        {result.detailHref ? (
+          <Link
+            className="mt-2 inline-flex font-medium text-emerald-800 hover:underline"
+            href={result.detailHref}
+          >
+            查看详情
+          </Link>
+        ) : null}
+      </div>
+    );
+  }
+
+  if (result.error) {
+    return (
+      <div className="rounded-lg border border-red-200 bg-red-50 p-3 text-red-700 text-sm">
+        {result.error}
+      </div>
+    );
+  }
+
+  return null;
+}
+
+function getToolPartName(part: UIMessage["parts"][number]) {
+  if ("toolName" in part && typeof part.toolName === "string") {
+    return part.toolName;
+  }
+
+  return part.type.startsWith("tool-") ? part.type.slice("tool-".length) : "";
+}
+
+function normalizeDraftInput(input: unknown): TicketDraft {
+  const draft = isRecord(input) ? input : {};
+  const assigneeMembershipId =
+    typeof draft.assigneeMembershipId === "string"
+      ? draft.assigneeMembershipId
+      : null;
+  const summary = typeof draft.summary === "string" ? draft.summary : "";
+  const locationDetail =
+    typeof draft.locationDetail === "string" ? draft.locationDetail : "";
+  const missingFields: string[] = [];
+
+  if (!summary.trim()) {
+    missingFields.push("问题描述");
+  }
+  if (!locationDetail.trim()) {
+    missingFields.push("详细位置");
+  }
+  if (!assigneeMembershipId?.trim()) {
+    missingFields.push("责任人");
+  }
+
+  return {
+    assigneeMembershipId,
+    description: typeof draft.description === "string" ? draft.description : "",
+    imageUrls: Array.isArray(draft.imageUrls)
+      ? draft.imageUrls.filter((url): url is string => typeof url === "string")
+      : [],
+    locationDetail,
+    missingFields,
+    severity: isDraftSeverity(draft.severity) ? draft.severity : "normal",
+    specialty: isDraftSpecialty(draft.specialty)
+      ? draft.specialty
+      : "architecture",
+    summary,
+  };
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null;
+}
+
+function isDraftSeverity(value: unknown): value is TicketDraft["severity"] {
+  return (
+    value === "minor" ||
+    value === "normal" ||
+    value === "serious" ||
+    value === "urgent"
+  );
+}
+
+function isDraftSpecialty(value: unknown): value is TicketDraft["specialty"] {
+  return (
+    value === "architecture" || value === "structure" || value === "plumbing"
+  );
 }
 
 function parseTicketResultsFromText(text: string): AssistantTicketResult[] {

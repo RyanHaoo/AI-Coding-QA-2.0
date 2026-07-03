@@ -94,7 +94,7 @@ export function createAssistantTools(context: AssistantRuntimeContext) {
     tool(
       async (input) => {
         const draft: TicketDraft = {
-          assigneeMembershipId: input.assigneeMembershipId ?? null,
+          assigneeMembershipId: input.assigneeMembershipId?.trim() || null,
           description: input.description?.trim() ?? "",
           imageUrls: (input.imageUrls ?? []).filter((url) =>
             context.uploadedImageUrls.includes(url),
@@ -140,7 +140,14 @@ export function createAssistantTools(context: AssistantRuntimeContext) {
           };
         }
 
-        const missing = missingDraftFields(input);
+        const assigneeMembershipId = input.assigneeMembershipId?.trim() ?? "";
+        const locationDetail = input.locationDetail?.trim() ?? "";
+        const summary = input.summary?.trim() ?? "";
+        const missing = missingDraftFields({
+          assigneeMembershipId,
+          locationDetail,
+          summary,
+        });
         if (missing.length > 0) {
           return {
             error: `请先补全：${missing.join("、")}。`,
@@ -149,18 +156,18 @@ export function createAssistantTools(context: AssistantRuntimeContext) {
           };
         }
 
-        const imageUrls = input.imageUrls.filter((url) =>
+        const imageUrls = (input.imageUrls ?? []).filter((url) =>
           context.uploadedImageUrls.includes(url),
         );
         const result = await createTicketFromAssistantDraft(
           {
-            assigneeMembershipId: input.assigneeMembershipId,
+            assigneeMembershipId,
             description: input.description ?? "",
             imageUrls,
-            locationDetail: input.locationDetail,
-            severity: input.severity,
-            specialty: input.specialty,
-            summary: input.summary,
+            locationDetail,
+            severity: normalizeSeverity(input.severity),
+            specialty: normalizeSpecialty(input.specialty),
+            summary,
           },
           context.currentIdentity,
         );
@@ -188,13 +195,13 @@ export function createAssistantTools(context: AssistantRuntimeContext) {
           "在用户明确确认建单草稿后创建待处理工单。只能由质检员或管理员调用，施工方必须拒绝。",
         name: "create_ticket_from_confirmed_draft",
         schema: z.object({
-          assigneeMembershipId: z.string(),
+          assigneeMembershipId: z.string().nullable().optional(),
           description: z.string().optional(),
-          imageUrls: z.array(z.string()),
-          locationDetail: z.string(),
-          severity: severitySchema,
-          specialty: specialtySchema,
-          summary: z.string(),
+          imageUrls: z.array(z.string()).optional(),
+          locationDetail: z.string().optional(),
+          severity: severitySchema.optional(),
+          specialty: specialtySchema.optional(),
+          summary: z.string().optional(),
         }),
       },
     ),

@@ -40,8 +40,20 @@ export function AssistantChat({
   }
 
   function confirmDraft(draft: TicketDraft) {
-    void sendMessage({
-      text: `确认创建工单，使用以下草稿：${JSON.stringify(draft)}`,
+    void sendMessage(undefined, {
+      body: {
+        resume: {
+          decisions: [
+            {
+              editedAction: {
+                args: draft,
+                name: "create_ticket_from_confirmed_draft",
+              },
+              type: "edit",
+            },
+          ],
+        },
+      },
     });
   }
 
