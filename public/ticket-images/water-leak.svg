@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" role="img" aria-label="Water leak placeholder">
+  <rect width="640" height="360" fill="#dbeafe"/>
+  <rect x="62" y="76" width="516" height="48" rx="24" fill="#64748b"/>
+  <path d="M180 124v94M320 124v126M460 124v76" stroke="#2563eb" stroke-width="12" stroke-linecap="round"/>
+  <path d="M320 264c36 48 54 78 54 104 0 30-24 54-54 54s-54-24-54-54c0-26 18-56 54-104z" transform="translate(0 -104)" fill="#38bdf8" opacity=".78"/>
+  <text x="64" y="328" fill="#1e3a8a" font-family="Arial, sans-serif" font-size="26">Plumbing issue photo</text>
+</svg>

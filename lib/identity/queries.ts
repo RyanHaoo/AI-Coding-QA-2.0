@@ -68,6 +68,15 @@ export async function getCurrentUserMemberships(): Promise<{
   memberships: ProjectMembership[];
 }> {
   const supabase = await createClient();
+  const { data: userData, error: userError } = await supabase.auth.getUser();
+
+  if (userError || !userData.user) {
+    return {
+      error: userError?.message ?? "User is not signed in.",
+      memberships: [],
+    };
+  }
+
   const { data, error } = await supabase
     .from("project_memberships")
     .select(`
@@ -89,6 +98,7 @@ export async function getCurrentUserMemberships(): Promise<{
         project_type
       )
     `)
+    .eq("user_id", userData.user.id)
     .order("created_at", { ascending: true });
 
   if (error) {

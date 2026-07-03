@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" role="img" aria-label="Concrete crack placeholder">
+  <rect width="640" height="360" fill="#e2e8f0"/>
+  <rect x="48" y="48" width="544" height="264" fill="#f8fafc" stroke="#94a3b8" stroke-width="4"/>
+  <path d="M318 48 286 110l38 32-58 70 45 30-36 70" fill="none" stroke="#b91c1c" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="438" cy="132" r="42" fill="#fee2e2" stroke="#ef4444" stroke-width="6"/>
+  <text x="64" y="328" fill="#334155" font-family="Arial, sans-serif" font-size="26">Structure issue photo</text>
+</svg>

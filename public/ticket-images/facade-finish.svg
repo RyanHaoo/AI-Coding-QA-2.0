@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" role="img" aria-label="Facade finish placeholder">
+  <rect width="640" height="360" fill="#f8fafc"/>
+  <rect x="72" y="56" width="496" height="248" fill="#e2e8f0" stroke="#94a3b8" stroke-width="4"/>
+  <rect x="108" y="92" width="148" height="176" fill="#bfdbfe"/>
+  <rect x="272" y="92" width="148" height="176" fill="#dbeafe"/>
+  <rect x="436" y="92" width="96" height="176" fill="#bfdbfe"/>
+  <path d="M272 92h148v176H272z" fill="#fef3c7" opacity=".7"/>
+  <text x="64" y="336" fill="#334155" font-family="Arial, sans-serif" font-size="26">Facade finish photo</text>
+</svg>

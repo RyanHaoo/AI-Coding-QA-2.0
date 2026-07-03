@@ -51,10 +51,17 @@ export async function selectIdentityAction(formData: FormData) {
   }
 
   const supabase = await createClient();
+  const { data: userData, error: userError } = await supabase.auth.getUser();
+
+  if (userError || !userData.user) {
+    redirect("/");
+  }
+
   const { data, error } = await supabase
     .from("project_memberships")
     .select("id")
     .eq("id", membershipId)
+    .eq("user_id", userData.user.id)
     .maybeSingle();
 
   if (error || !data) {
