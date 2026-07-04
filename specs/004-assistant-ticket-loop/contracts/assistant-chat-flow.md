@@ -4,7 +4,7 @@
 
 ### `POST /api/chat`
 
-**目的**: 处理助手消息流、Agent 固定工具调用、查单、草稿整理和确认建单。
+**目的**: 处理助手消息流、Agent 固定工具调用、查单和 HITL 确认建单。
 
 **请求体**:
 
@@ -107,26 +107,9 @@ authenticate Supabase user
 
 **输出**: `membershipId`、姓名、部门。
 
-### `prepare_ticket_draft`
-
-**用途**: 基于同一轮多模态输入和上下文生成待确认建单草稿。
-
-**输入**:
-
-| 字段 | 类型 | 必填 | 说明 |
-|------|------|------|------|
-| `summary` | string | 否 | Agent 整理的问题摘要 |
-| `locationDetail` | string | 否 | Agent 整理的位置 |
-| `severity` | string | 否 | 建议严重程度 |
-| `specialty` | string | 否 | 建议专业类型 |
-| `description` | string | 否 | 建议问题详情 |
-| `imageUrls` | string[] | 否 | 当前消息中用户保留的图片 URL |
-
-**输出**: 建单草稿和缺失字段列表。
-
 ### `create_ticket_from_confirmed_draft`
 
-**用途**: 用户明确确认草稿后创建待处理工单。
+**用途**: 基于同一轮多模态输入整理待创建工单信息，并通过 human-in-the-loop 确认卡片创建待处理工单。
 
 **输入**:
 
@@ -157,7 +140,7 @@ authenticate Supabase user
 - 前端 `useChat` 使用服务端提供的 `UIMessage[]` 初始消息。
 - 若没有历史，展示 Stitch 风格空对话和底部输入区。
 
-### 建单草稿卡片
+### 建单确认卡片
 
 卡片必须展示：
 

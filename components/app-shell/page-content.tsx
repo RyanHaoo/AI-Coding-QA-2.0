@@ -60,7 +60,7 @@ const contentByView = {
     title: "工单中心",
   },
   assistant: {
-    description: "对话查单、整理建单草稿并创建当前项目待处理工单。",
+    description: "对话查单、确认建单信息并创建当前项目待处理工单。",
     icon: BotMessageSquare,
     label: "默认入口",
     title: "智能助手",

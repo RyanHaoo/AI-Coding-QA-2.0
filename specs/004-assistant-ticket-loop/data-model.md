@@ -11,7 +11,7 @@
 | `project_id` | uuid | 是 | 当前项目 ID |
 | `membership_id` | uuid | 是 | 当前项目身份 ID |
 | `messages` | jsonb | 是 | AI SDK `UIMessage[]` 快照，默认空数组 |
-| `draft_state` | jsonb | 否 | 当前待确认建单草稿；没有草稿时为空 |
+| `draft_state` | jsonb | 否 | 历史兼容字段；当前流程不再主动保存独立草稿状态 |
 | `created_at` | timestamptz | 是 | 创建时间 |
 | `updated_at` | timestamptz | 是 | 最近保存时间 |
 
@@ -20,7 +20,7 @@
 - `user_id` 对应当前 Supabase Auth 用户。
 - `project_id` 对应 `projects.id`。
 - `membership_id` 对应 `project_memberships.id`。
-- `draft_state` 中的责任人候选必须属于同一 `project_id` 且角色为施工方。
+- 当前建单确认信息通过 HITL 工具调用承载；如历史 `draft_state` 存在，责任人候选仍必须属于同一 `project_id` 且角色为施工方。
 
 ### 约束
 
@@ -62,9 +62,9 @@
 - 图片与文本共同组成同一轮 Agent 多模态输入；不建立独立图片理解实体。
 - 用户确认建单后，保留的图片 URL 写入新工单 `tickets.image_urls`。
 
-## 建单草稿
+## 建单确认信息
 
-表示 Agent 从当前对话整理出的待确认工单信息，最终提交前必须由用户确认或编辑。
+表示 Agent 从当前对话整理出的待创建工单信息，通过 HITL 确认卡片由用户确认或编辑。
 
 | 字段 | 类型 | 必填 | 说明 |
 |------|------|------|------|
@@ -79,11 +79,11 @@
 
 ### 验证规则
 
-- 质检员和管理员可以生成并提交草稿；施工方不能创建工单。
+- 质检员和管理员可以进入 HITL 建单确认并提交；施工方不能创建工单。
 - `summary`、`locationDetail`、`assigneeMembershipId` 为提交前必填。
 - `assigneeMembershipId` 必须属于当前项目施工方。
 - `severity` 和 `specialty` 若 Agent 无法判断，可使用默认可见值并允许用户调整。
-- 草稿字段不是最终工单，只有确认提交后才写入 `tickets`。
+- 确认卡片字段不是最终工单，只有确认提交后才写入 `tickets`。
 
 ## 查单结果
 
@@ -121,6 +121,6 @@
 ### 写入规则
 
 - 新工单状态固定为待处理。
-- 发起人为当前身份，责任人为草稿中选择的施工方。
+- 发起人为当前身份，责任人为确认卡片中选择的施工方。
 - 创建成功必须写入一条 `created` 处理记录。
-- 创建失败时不得保存半成品草稿为工单，助手回复必须保留用户输入和草稿信息。
+- 创建失败时不得保存半成品信息为工单，助手回复必须保留用户输入和确认信息。
