@@ -9,7 +9,7 @@ import { randomUUID } from "node:crypto";
 
 import { assistantEnv } from "@/lib/assistant/env";
 
-const cozeTimeoutMs = 30_000;
+const cozeTimeoutMs = 60_000;
 
 export type CozeKnowledgeStatus = "empty" | "failed" | "success" | "timeout";
 
