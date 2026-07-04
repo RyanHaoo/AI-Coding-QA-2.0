@@ -76,12 +76,12 @@ export function TicketDraftCard({
       <div className="flex items-center justify-between gap-3">
         <div>
           <h3 className="font-semibold text-slate-950">
-            {readOnly ? "已确认工单草稿" : "待确认工单草稿"}
+            {readOnly ? "已确认创建工单" : "确认创建工单"}
           </h3>
           <p className="mt-1 text-slate-500 text-xs">
             {readOnly
-              ? "草稿已提交创建，字段不可再编辑。"
-              : "确认前可调整字段和保留图片。"}
+              ? "工单信息已提交创建，字段不可再编辑。"
+              : "创建前可调整字段和保留图片。"}
           </p>
         </div>
         <CheckCircle2

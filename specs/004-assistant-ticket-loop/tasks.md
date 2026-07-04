@@ -42,7 +42,7 @@
 **关键规则**: 只放阻塞 P1 的共享能力；不提前实现 Coze/扣子、MCP、HITL、完整会话列表或生产级审计。
 
 - [X] T006 创建 `supabase/migrations/202607030004_stage4_assistant_sessions.sql`，新增 `assistant_sessions` 表、默认会话唯一约束、必要索引和 authenticated/RLS 策略说明
-- [X] T007 [P] 在 `lib/assistant/types.ts` 定义助手会话、建单草稿、查单结果、上传文件返回和 Agent runtime context 类型
+- [X] T007 [P] 在 `lib/assistant/types.ts` 定义助手会话、建单确认信息、查单结果、上传文件返回和 Agent runtime context 类型
 - [X] T008 [P] 在 `lib/assistant/session.ts` 实现当前用户当前项目身份默认助手会话的读取、创建和 `UIMessage[]` 快照保存
 - [X] T009 [P] 在 `lib/assistant/runtime.ts` 实现服务端当前身份解析，复用 `lib/identity/queries.ts` 和当前身份 cookie
 - [X] T010 [P] 在 `lib/assistant/model.ts` 使用 `@langchain/openai` 创建指向 OpenRouter `OPENROUTER_BASE_URL` 的 ChatOpenAI 模型
@@ -50,7 +50,7 @@
 - [X] T012 [P] 在 `lib/tickets/assistant-queries.ts` 实现当前身份可见工单查询、关键词/编号/状态筛选和详情链接构建 helper
 - [X] T013 [P] 在 `lib/assistant/uploads.ts` 封装助手图片上传结果校验，复用 `lib/tickets/image-storage.ts` 的 MIME 和 5MB 限制
 - [X] T014 在 `app/api/assistant-images/route.ts` 实现服务端图片上传 route，验证登录和当前身份后返回 AI SDK file part 所需 URL
-- [X] T015 在 `lib/assistant/tools.ts` 实现固定 server-side tools：`search_visible_tickets`、`list_project_builders`、`prepare_ticket_draft`、`create_ticket_from_confirmed_draft`
+- [X] T015 在 `lib/assistant/tools.ts` 实现固定 server-side tools：`search_visible_tickets`、`list_project_builders`、`create_ticket_from_confirmed_draft`
 - [X] T016 在 `lib/assistant/agent.ts` 使用 `createAgent()` 组合 OpenRouter 模型、固定 tools 和阶段 4 系统提示词
 - [X] T017 在 `app/api/chat/route.ts` 实现 AI SDK -> LangChain -> AI SDK stream 主链路，使用 `toBaseMessages`、`toUIMessageStream` 和 `createUIMessageStreamResponse`
 - [X] T018 在 `app/api/chat/route.ts` 接入 onEnd 会话快照保存，确保刷新后由 Supabase 恢复 `UIMessage[]`
@@ -61,7 +61,7 @@
 
 ## Phase 3: 用户故事 1 - 通过助手创建工单（优先级: P1）
 
-**目标**: 质检员或管理员可通过文字和现场图片让 Agent 整理建单草稿，确认后创建待处理工单并在详情中看到图片。
+**目标**: 质检员或管理员可通过文字和现场图片让 Agent 直接进入建单确认卡片，确认后创建待处理工单并在详情中看到图片。
 
 **独立验收**: 使用质检员或管理员身份进入智能助手，输入建单话术并上传图片，选择责任人后确认提交；对话返回工单编号，列表/详情可查到新工单和现场图片。
 
@@ -71,9 +71,9 @@
 - [X] T020 [P] [US1] 在 `components/assistant/assistant-chat.tsx` 使用 `useChat` 和 `DefaultChatTransport({ api: "/api/chat" })` 提交完整 `UIMessage[]`
 - [X] T021 [P] [US1] 在 `components/assistant/assistant-input.tsx` 实现文本输入、图片选择、图片预览、删除图片和发送消息
 - [X] T022 [US1] 在 `components/assistant/assistant-input.tsx` 接入 `POST /api/assistant-images`，上传成功后把图片作为 AI SDK file part 随同一轮消息发送
-- [X] T023 [P] [US1] 在 `components/assistant/ticket-draft-card.tsx` 创建建单草稿卡片，展示问题描述、位置、严重程度、专业类型、责任人、详情、图片和确认按钮
-- [X] T024 [US1] 在 `components/assistant/ticket-draft-card.tsx` 实现草稿字段编辑、责任人选择和保留图片列表调整
-- [X] T025 [US1] 在 `lib/assistant/tools.ts` 确保 `prepare_ticket_draft` 缺少问题描述、位置或责任人时返回缺失字段和追问提示
+- [X] T023 [P] [US1] 在 `components/assistant/ticket-draft-card.tsx` 创建建单确认卡片，展示问题描述、位置、严重程度、专业类型、责任人、详情、图片和确认按钮
+- [X] T024 [US1] 在 `components/assistant/ticket-draft-card.tsx` 实现建单确认字段编辑、责任人选择和保留图片列表调整
+- [X] T025 [US1] 在 `lib/assistant/tools.ts` 确保 `create_ticket_from_confirmed_draft` 缺少问题描述、位置或责任人时通过 HITL 卡片保留缺失字段
 - [X] T026 [US1] 在 `lib/assistant/tools.ts` 确保 `create_ticket_from_confirmed_draft` 只允许质检员和管理员创建工单，施工方返回拒绝原因
 - [X] T027 [US1] 在 `lib/tickets/creation.ts` 确保新工单状态为待处理、发起人为当前身份、责任人为所选施工方，并生成 `created` 处理记录
 - [X] T028 [US1] 在 `components/app-shell/page-content.tsx` 将 `view=assistant` 的占位内容替换为 `AssistantPage`
@@ -105,7 +105,7 @@
 
 ## Phase 5: 用户故事 3 - 呈现可演示的聊天体验（优先级: P3）
 
-**目标**: 参考 Stitch 聊天界面完成消息流、用户气泡、助手回复、建单草稿卡片、图片预览、成功反馈和底部输入区的演示体验。
+**目标**: 参考 Stitch 聊天界面完成消息流、用户气泡、助手回复、建单确认卡片、图片预览、成功反馈和底部输入区的演示体验。
 
 **独立验收**: 打开助手页面后，在桌面和移动宽度下完成至少一次建单或查单，确认消息流、输入区、卡片和成功反馈清晰可读。
 
@@ -164,7 +164,7 @@
 ### 并行机会
 
 - T007-T013 可在 T006 migration 设计确认后并行推进。
-- T019-T023 可并行创建助手容器、chat hook、输入区和草稿卡片。
+- T019-T023 可并行创建助手容器、chat hook、输入区和建单确认卡片。
 - T031 与 T033 可并行开发查询 helper 和结果组件。
 - T037-T038 可与 T040-T042 并行做不同 UI 文件的展示打磨。
 - T044-T046 可在实现完成后并行更新文档与进度。
@@ -195,4 +195,3 @@
 - OpenRouter API key、Supabase secret 和服务端 runtime context 不得进入浏览器 bundle。
 - 图片和文本作为同一轮 Agent 多模态输入，不建立独立图片理解链路或独立业务字段。
 - 阶段 4 不接 Coze/扣子知识接口、规范条文问答、MCP、HITL 或 LangSmith 监控。
-

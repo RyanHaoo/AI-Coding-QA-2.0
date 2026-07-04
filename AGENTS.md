@@ -50,6 +50,7 @@
 - 无需处理 `npm audit` 输出，除非用户明确要求。
 - Windows 环境下按 UTF-8 处理源码、Markdown、JSON、YAML、TOML、CSV 和配置文件；编辑优先使用 `apply_patch`。
 - 需要使用真实浏览器测试时调用codex内置的浏览器，不要连接或启动外部浏览器
+- 智能助手建单不再使用独立 `prepare_ticket_draft` 草稿工具；建单意图应在获取责任人候选后直接进入 `create_ticket_from_confirmed_draft` 的 HITL 确认卡片。
 
 ## Supabase
 

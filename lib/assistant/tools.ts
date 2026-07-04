@@ -1,10 +1,7 @@
 import { tool } from "langchain";
 import { z } from "zod";
 
-import type {
-  AssistantRuntimeContext,
-  TicketDraft,
-} from "@/lib/assistant/types";
+import type { AssistantRuntimeContext } from "@/lib/assistant/types";
 import { queryCozeConstructionKnowledge } from "@/lib/assistant/coze";
 import { createTicketFromAssistantDraft } from "@/lib/tickets/creation";
 import {
@@ -115,46 +112,6 @@ export function createAssistantTools(context: AssistantRuntimeContext) {
     ),
     tool(
       async (input) => {
-        const draft: TicketDraft = {
-          assigneeMembershipId: input.assigneeMembershipId?.trim() || null,
-          description: input.description?.trim() ?? "",
-          imageUrls: (input.imageUrls ?? []).filter((url) =>
-            context.uploadedImageUrls.includes(url),
-          ),
-          locationDetail: input.locationDetail?.trim() ?? "",
-          missingFields: [],
-          severity: normalizeSeverity(input.severity),
-          specialty: normalizeSpecialty(input.specialty),
-          summary: input.summary?.trim() ?? "",
-        };
-        draft.missingFields = missingDraftFields(draft);
-
-        return {
-          draft,
-          kind: "ticket_draft",
-          message:
-            draft.missingFields.length > 0
-              ? `草稿还缺少：${draft.missingFields.join("、")}。`
-              : "已整理建单草稿，请用户确认或调整后再创建。",
-        };
-      },
-      {
-        description:
-          "基于同一轮文字和图片多模态输入整理待确认工单草稿。缺少问题描述、详细位置或责任人时必须返回缺失字段。",
-        name: "prepare_ticket_draft",
-        schema: z.object({
-          assigneeMembershipId: z.string().optional(),
-          description: z.string().optional(),
-          imageUrls: z.array(z.string()).optional(),
-          locationDetail: z.string().optional(),
-          severity: severitySchema.optional(),
-          specialty: specialtySchema.optional(),
-          summary: z.string().optional(),
-        }),
-      },
-    ),
-    tool(
-      async (input) => {
         if (context.currentIdentity.role === "builder") {
           return {
             error: "施工方不能发起工单。请联系质检员或管理员创建。",
@@ -214,7 +171,7 @@ export function createAssistantTools(context: AssistantRuntimeContext) {
       },
       {
         description:
-          "在用户明确确认建单草稿后创建待处理工单。只能由质检员或管理员调用，施工方必须拒绝。",
+          "基于同一轮文字和图片多模态输入整理待创建工单信息，并在 human-in-the-loop 确认后创建待处理工单。只能由质检员或管理员调用，施工方必须拒绝。",
         name: "create_ticket_from_confirmed_draft",
         schema: z.object({
           assigneeMembershipId: z.string().nullable().optional(),

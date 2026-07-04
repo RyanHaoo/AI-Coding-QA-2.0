@@ -8,7 +8,7 @@
 
 ## 摘要
 
-阶段 4 的核心目标是在现有登录身份、工单数据底座和工单操作闭环之上，接入一个可演示的智能助手：用户以自然语言和现场图片发起建单，Agent 在同一轮多模态输入中整理建单草稿，用户确认后创建待处理工单；用户也可以用自然语言按编号、关键词或“我的待处理工单”查找有权工单。
+阶段 4 的核心目标是在现有登录身份、工单数据底座和工单操作闭环之上，接入一个可演示的智能助手：用户以自然语言和现场图片发起建单，Agent 在同一轮多模态输入中直接展示 HITL 建单确认卡片，用户确认后创建待处理工单；用户也可以用自然语言按编号、关键词或“我的待处理工单”查找有权工单。
 
 技术实现严格采用当前 Next.js App Router 技术栈和 `simple-next-langchain-agent` 指定路径：前端用 AI SDK `useChat` 与 `DefaultChatTransport` 管理 `UIMessage[]`；后端 `/api/chat` 使用 `@ai-sdk/langchain` 把 `UIMessage[]` 转为 LangChain messages，并把 LangChain stream 转回 UIMessage stream；Agent 使用 LangChain `createAgent()` 和固定服务端 tools；LLM 固定通过 `@langchain/openai` 连接 OpenRouter OpenAI-compatible API。Supabase 继续负责 Auth、当前身份、会话快照、工单、处理记录和图片 URL。
 
@@ -18,7 +18,7 @@
 
 **主要依赖**: 现有 Next.js、React、Supabase、shadcn/ui、lucide-react；新增 `ai`、`@ai-sdk/react`、`@ai-sdk/langchain`、`langchain`、`@langchain/core`、`@langchain/openai`、`zod`；按需安装 AI Elements 组件
 
-**数据与存储**: Supabase Auth 和现有 `project_memberships` 控制身份；现有 `tickets`、`ticket_activity_logs`、`ticket-images` bucket 承载工单和图片；新增最小助手会话表保存当前身份/项目的 `UIMessage[]` 快照和可选草稿状态
+**数据与存储**: Supabase Auth 和现有 `project_memberships` 控制身份；现有 `tickets`、`ticket_activity_logs`、`ticket-images` bucket 承载工单和图片；新增最小助手会话表保存当前身份/项目的 `UIMessage[]` 快照，历史 `draft_state` 字段仅保留兼容
 
 **静态检查**: `npm run check`；如果只更新文档，执行占位符和一致性检查
 
@@ -37,13 +37,13 @@
 - 阶段 4 不接 Coze/扣子知识接口、不做规范条文问答、不做 MCP、不做 HITL、不做生产级会话管理。
 - 开发开始前必须完成 `.env.local` 中 `SECRET_KEY`、`OPENROUTER_API_KEY`、`OPENROUTER_MODEL` 配置并由 agent 确认存在值。
 
-**范围**: P1 助手多模态建单闭环；P2 自然语言查单；P3 Stitch 风格聊天体验。核心实体包括助手会话、`UIMessage[]` 快照、现场图片文件部件、建单草稿、查单结果、工单、处理记录和当前身份可见范围。
+**范围**: P1 助手多模态建单闭环；P2 自然语言查单；P3 Stitch 风格聊天体验。核心实体包括助手会话、`UIMessage[]` 快照、现场图片文件部件、建单确认信息、查单结果、工单、处理记录和当前身份可见范围。
 
 ## Constitution Check
 
 *门禁：Phase 0 研究前必须通过；Phase 1 设计后必须复核。*
 
-- **MVP核心路径**: 本功能支撑的 P1 演示闭环是“质检员/管理员进入助手 -> 输入文字并上传图片 -> Agent 生成待确认草稿 -> 用户选择责任人并确认 -> 创建待处理工单 -> 列表/详情可查并展示图片”。
+- **MVP核心路径**: 本功能支撑的 P1 演示闭环是“质检员/管理员进入助手 -> 输入文字并上传图片 -> Agent 直接展示建单确认卡片 -> 用户选择责任人并确认 -> 创建待处理工单 -> 列表/详情可查并展示图片”。
 - **需求驱动快速实现**: 计划复用 `components/app-shell/page-content.tsx`、现有工单组件、`lib/identity/*`、`lib/tickets/*`、`lib/supabase/*`、`app/actions.ts` 中的身份和图片上传模式；新增依赖仅为 AI SDK、LangChain、OpenRouter 所需依赖和 AI Elements UI 组件。
 - **静态检查门槛**: 交付前运行 `npm run check`；若仅文档变更，运行占位符和一致性检查。
 - **复杂度控制**: 不新增通用权限体系、缓存、国际化、无障碍专项、MCP、HITL 或 Agent Server；新增助手会话表和 Agent helper 只为 `UIMessage[]` 持久化与阶段 4 演示闭环服务。
@@ -91,8 +91,8 @@ public/
 **结构决策**: 
 - `app/api/chat/route.ts` 承担 AI SDK UIMessage stream 主链路，不手写 SSE。
 - `app/api/assistant-images/route.ts` 只处理对话图片上传，复用 `ticket-images` bucket 和服务端 secret 边界，返回 AI SDK file part 所需 URL。
-- `components/assistant/` 放置助手页面、输入区、消息渲染和建单草稿卡片；重复 UI 基础能力继续放 `components/ui/`。
-- `lib/assistant/` 放置 Agent 创建、OpenRouter model、固定 tools、会话持久化、草稿整理和 API route 辅助函数。
+- `components/assistant/` 放置助手页面、输入区、消息渲染和建单确认卡片；重复 UI 基础能力继续放 `components/ui/`。
+- `lib/assistant/` 放置 Agent 创建、OpenRouter model、固定 tools、会话持久化和 API route 辅助函数。
 - `lib/tickets/` 扩展最小建单 mutation 和查单 helper，继续复用既有类型、格式化、权限规则和图片上传 helper。
 
 ## 复杂度记录
