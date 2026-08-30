@@ -1,6 +1,7 @@
 import { Building2, ChevronRight, ShieldCheck } from "lucide-react";
 
 import { logoutAction, selectIdentityAction } from "@/app/actions";
+import { FormPendingOverlay } from "@/components/app-shell/form-pending-overlay";
 import { Button } from "@/components/ui/button";
 import { projectTypeLabels, roleLabels } from "@/lib/identity/navigation";
 import type { ProjectMembership } from "@/lib/identity/types";
@@ -31,6 +32,7 @@ export function IdentitySelection({ memberships }: IdentitySelectionProps) {
           {memberships.map((membership) => (
             <form action={selectIdentityAction} key={membership.id}>
               <input name="membershipId" type="hidden" value={membership.id} />
+              <FormPendingOverlay />
               <button
                 className="group flex w-full items-center justify-between border border-slate-100 bg-[#f8fafc] p-4 text-left transition-colors hover:border-[#005ac2]/25 hover:bg-white"
                 type="submit"

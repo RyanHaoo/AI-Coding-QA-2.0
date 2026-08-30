@@ -3,7 +3,8 @@
 import { BadgeIcon, Building2, UserRound } from "lucide-react";
 import { useActionState } from "react";
 
-import { loginAction, type LoginActionState } from "@/app/actions";
+import { type LoginActionState, loginAction } from "@/app/actions";
+import { FormPendingOverlay } from "@/components/app-shell/form-pending-overlay";
 import { Button } from "@/components/ui/button";
 
 const initialState: LoginActionState = {
@@ -85,6 +86,7 @@ export function LoginForm() {
               <form action={formAction} key={identity.email}>
                 <input name="email" type="hidden" value={identity.email} />
                 <input name="password" type="hidden" value={demoPassword} />
+                <FormPendingOverlay />
                 <Button
                   aria-label={`以${identity.name}身份登录`}
                   className="h-auto min-h-20 w-full justify-start rounded-none border border-slate-200 bg-slate-50 px-4 py-4 text-left text-slate-900 hover:border-[#005ac2] hover:bg-white hover:text-slate-900 focus-visible:border-[#005ac2] focus-visible:ring-[#005ac2]/20 disabled:opacity-60"
