@@ -4,6 +4,7 @@ import { ArrowLeft, ImageIcon } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { CopyTicketSummaryButton } from "@/components/tickets/copy-ticket-summary-button";
 import { TicketActivityList } from "@/components/tickets/ticket-activity-list";
 import { TicketOperationPanel } from "@/components/tickets/ticket-operation-panel";
 import type { ProjectMembership } from "@/lib/identity/types";
@@ -14,6 +15,7 @@ import {
   formatTicketStatus,
 } from "@/lib/tickets/formatters";
 import { buildTicketHref } from "@/lib/tickets/query-params";
+import { formatTicketShareSummary } from "@/lib/tickets/share-summary";
 import type {
   AdminTicketFilters,
   TicketAssigneeCandidate,
@@ -91,6 +93,11 @@ export function TicketDetail({
               </div>
               <p className="mt-2 text-slate-500 text-sm">{ticket.summary}</p>
             </div>
+            <CopyTicketSummaryButton
+              key={`${ticket.id}:${ticket.updatedAt}`}
+              summary={formatTicketShareSummary(ticket)}
+              ticketId={ticket.id}
+            />
           </div>
         </div>
 

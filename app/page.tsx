@@ -69,10 +69,15 @@ export default async function Home({ searchParams }: HomeProps) {
     return <IdentitySelection memberships={memberships} />;
   }
 
-  const activeView = normalizeView(params?.view);
+  const ticketQuery = parseTicketQueryParams(params);
+  const activeView =
+    ticketQuery.ticketId && !params?.view
+      ? currentIdentity.role === "admin"
+        ? "admin-tickets"
+        : "tickets"
+      : normalizeView(params?.view);
   const navigation = getNavigationForRole(currentIdentity.role);
   const allowed = isViewAllowed(currentIdentity.role, activeView);
-  const ticketQuery = parseTicketQueryParams(params);
 
   const [
     memberTickets,

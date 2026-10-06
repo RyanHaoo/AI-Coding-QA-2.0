@@ -99,6 +99,8 @@ uvx --from git+https://github.com/github/spec-kit.git specify init --here --forc
 
 ## context7 记录
 
+- 工单摘要复制查询了 Context7 library id：`/vercel/next.js`，并阅读本地 `use-client` 文档。
+
 - 本次初始化使用了本地 Next.js、shadcn/ui 与内置浏览器 skill，未使用 context7 library id。
 - 本次 Supabase 初始化查询了 Supabase changelog、Supabase MCP `searchDocs` 的 Next.js SSR client 文档，以及本地 Next.js 16 `proxy` 文档；未使用 context7 library id。
 - 阶段 4 智能助手计划查询了 context7 library id：`/websites/ai-sdk_dev`、`/websites/langchain_oss_javascript`。
